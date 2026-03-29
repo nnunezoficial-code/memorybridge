@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MemoryBridge AI</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -736,8 +737,8 @@
             <strong>Arrastra tu archivo acá</strong>
             <p>o selecciónalo manualmente</p>
             <label class="file-btn" for="fileInput">Elegir archivo</label>
-            <input class="file-input" type="file" id="fileInput" accept=".txt,.md,.json,.csv" />
-            <p>Formatos soportados por ahora: .txt, .md, .json, .csv</p>
+            <input class="file-input" type="file" id="fileInput" accept=".txt,.md,.json,.csv,.zip" />
+            <p>Formatos soportados: .txt, .md, .json, .csv, .zip</p>
           </div>
 
           <div class="preview-box" id="archivoPreview">
@@ -787,7 +788,7 @@
           </div>
           <div class="feature-card">
             <h4>Input flexible</h4>
-            <p>Pega chats o arrastra archivos según lo que tengas a mano.</p>
+            <p>Pega chats, sube archivos o usa ZIP exportados directamente.</p>
           </div>
           <div class="feature-card">
             <h4>Más producto</h4>
@@ -901,8 +902,15 @@
       document.getElementById("fileCharCounter").innerText = `${texto.length} caracteres`;
     }
 
-    function leerArchivo(file) {
+    async function leerArchivo(file) {
       if (!file) return;
+
+      const nombre = file.name.toLowerCase();
+
+      if (nombre.endsWith(".zip")) {
+        await leerZip(file);
+        return;
+      }
 
       const reader = new FileReader();
 
@@ -914,6 +922,44 @@
       };
 
       reader.readAsText(file);
+    }
+
+    async function leerZip(file) {
+      try {
+        const zip = await JSZip.loadAsync(file);
+        let textoFinal = "";
+
+        const archivos = Object.keys(zip.files);
+
+        for (const nombre of archivos) {
+          const archivo = zip.files[nombre];
+
+          if (
+            !archivo.dir &&
+            (
+              nombre.endsWith(".txt") ||
+              nombre.endsWith(".md") ||
+              nombre.endsWith(".json") ||
+              nombre.endsWith(".csv") ||
+              nombre.endsWith(".html")
+            )
+          ) {
+            const contenido = await archivo.async("string");
+            textoFinal += `\n\n===== ${nombre} =====\n\n${contenido}`;
+          }
+        }
+
+        if (!textoFinal.trim()) {
+          alert("No encontré archivos de texto útiles dentro del ZIP.");
+          return;
+        }
+
+        document.getElementById("archivoPreview").style.display = "block";
+        document.getElementById("archivoTexto").value = textoFinal.trim();
+        actualizarContadorArchivo();
+      } catch (error) {
+        alert("No pude abrir ese ZIP. Prueba con otro archivo.");
+      }
     }
 
     function escaparHTML(texto) {
@@ -1172,6 +1218,11 @@
         leerArchivo(files[0]);
       }
     });
+
+    actualizarContadorTexto();
+  </script>
+</body>
+</html>
 
     actualizarContadorTexto();
   </script>
