@@ -9,55 +9,123 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(15, 23, 42, 0.82);
+      --panel-2: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #eef2ff;
+      --muted: #98a2b3;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --cyan: #22d3ee;
+      --shadow: 0 18px 50px rgba(0,0,0,0.32);
+      --radius: 22px;
+    }
+
     body {
       margin: 0;
       font-family: Inter, Arial, sans-serif;
-      background: #0b0f19;
-      color: #f5f7fb;
-    }
-
-    .page {
-      min-height: 100vh;
+      color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(86, 137, 255, 0.18), transparent 30%),
-        radial-gradient(circle at top right, rgba(120, 255, 214, 0.12), transparent 25%),
-        linear-gradient(180deg, #0b0f19 0%, #111827 100%);
-      padding: 40px 20px 60px;
+        radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(34,197,94,0.12), transparent 22%),
+        linear-gradient(180deg, #0a0f1d 0%, #111827 100%);
+      min-height: 100vh;
     }
 
     .container {
-      max-width: 1180px;
+      max-width: 1240px;
       margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 26px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 10px 30px rgba(59,130,246,0.28);
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.4px;
+    }
+
+    .brand-text p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: #dbe7ff;
+      font-size: 13px;
     }
 
     .hero {
       text-align: center;
-      margin-bottom: 26px;
+      margin-bottom: 30px;
     }
 
-    .badge {
+    .hero-badge {
       display: inline-block;
-      padding: 8px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #dbe7ff;
-      font-size: 14px;
-      letter-spacing: 0.2px;
       margin-bottom: 18px;
-      backdrop-filter: blur(10px);
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: #d9e6ff;
+      font-size: 13px;
     }
 
-    .hero h1 {
+    .hero h2 {
       margin: 0;
-      font-size: 54px;
-      line-height: 1.05;
+      font-size: 58px;
+      line-height: 1.03;
+      letter-spacing: -2px;
       font-weight: 800;
-      letter-spacing: -1.6px;
     }
 
-    .gradient-text {
-      background: linear-gradient(90deg, #ffffff, #8ab4ff 55%, #7ef7d0 100%);
+    .gradient {
+      background: linear-gradient(90deg, #ffffff, #8ab4ff 50%, #7ef7d0 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -65,90 +133,182 @@
     }
 
     .hero p {
-      max-width: 760px;
+      max-width: 800px;
       margin: 18px auto 0;
-      color: #a8b3c7;
+      color: var(--muted);
       font-size: 18px;
-      line-height: 1.65;
+      line-height: 1.7;
     }
 
-    .grid {
+    .main-grid {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 24px;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
       align-items: start;
-      margin-top: 34px;
     }
 
     .card {
-      background: rgba(17, 24, 39, 0.82);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      box-shadow: 0 18px 50px rgba(0,0,0,0.28);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
       backdrop-filter: blur(14px);
     }
 
-    .main-card {
-      padding: 28px;
+    .left-card,
+    .right-card {
+      padding: 24px;
     }
 
-    .sidebar-card {
-      padding: 22px;
+    .mini-badge {
+      display: inline-block;
+      font-size: 12px;
+      color: #a9c1ff;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
     }
 
     .section-title {
-      margin: 0 0 10px;
-      font-size: 20px;
-      font-weight: 700;
-      color: #eef4ff;
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.6px;
     }
 
     .section-subtitle {
-      margin: 0 0 18px;
-      color: #9aa7bd;
+      margin: 10px 0 0;
       font-size: 15px;
-      line-height: 1.6;
+      color: var(--muted);
+      line-height: 1.7;
     }
 
-    .toggle-row {
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .provider-card {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      border-radius: 18px;
+      padding: 16px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      text-align: left;
+    }
+
+    .provider-card:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .provider-card.active {
+      border-color: rgba(34,197,94,0.55);
+      background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(34,197,94,0.14));
+      box-shadow: 0 12px 30px rgba(34,197,94,0.08);
+    }
+
+    .provider-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .provider-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .provider-card h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+    }
+
+    .provider-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+
+    .steps-box {
+      margin-top: 8px;
+      margin-bottom: 22px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .steps-title {
+      margin: 0 0 12px;
+      font-size: 16px;
+      color: #eaf1ff;
+    }
+
+    .steps-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    .mode-switch {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
-    .toggle-btn {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
+    .mode-btn {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
       color: #dbe7ff;
-      padding: 12px 18px;
+      padding: 12px 16px;
       border-radius: 14px;
-      font-size: 14px;
       cursor: pointer;
       transition: 0.2s ease;
+      font-size: 14px;
     }
 
-    .toggle-btn:hover {
-      background: rgba(255,255,255,0.09);
+    .mode-btn:hover {
+      background: rgba(255,255,255,0.08);
     }
 
-    .toggle-btn.active {
-      background: linear-gradient(135deg, #3b82f6, #22c55e);
+    .mode-btn.active {
+      background: linear-gradient(135deg, var(--blue), var(--green));
       color: white;
       border: none;
-      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.28);
+      box-shadow: 0 10px 26px rgba(59,130,246,0.26);
+    }
+
+    .textarea-wrap {
+      position: relative;
     }
 
     .input-box {
       width: 100%;
       min-height: 240px;
       border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      color: #f5f7fb;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.045);
+      color: var(--text);
       padding: 18px;
       font-size: 15px;
-      line-height: 1.6;
+      line-height: 1.65;
       resize: vertical;
       outline: none;
     }
@@ -157,313 +317,460 @@
       color: #7f8aa0;
     }
 
-    .upload-box {
-      border: 1.5px dashed rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.03);
-      border-radius: 18px;
-      padding: 28px;
-      text-align: center;
+    .char-counter {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
     }
 
-    .upload-box p {
-      color: #9aa7bd;
+    .dropzone {
+      border: 1.6px dashed rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.03);
+      border-radius: 18px;
+      padding: 28px 20px;
+      text-align: center;
+      transition: 0.2s ease;
+    }
+
+    .dropzone.dragover {
+      border-color: rgba(34,197,94,0.75);
+      background: rgba(34,197,94,0.08);
+      transform: scale(1.01);
+    }
+
+    .dropzone strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .dropzone p {
+      margin: 8px 0 0;
+      color: var(--muted);
       font-size: 14px;
-      margin: 10px 0 0;
       line-height: 1.6;
     }
 
-    input[type="file"] {
-      color: #dbe7ff;
+    .file-btn {
+      margin-top: 16px;
+      display: inline-block;
+      padding: 11px 16px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: #eef2ff;
+      cursor: pointer;
       font-size: 14px;
     }
 
-    .action-row {
+    .file-input {
+      display: none;
+    }
+
+    .preview-box {
+      margin-top: 16px;
+      display: none;
+    }
+
+    .actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
       margin-top: 18px;
     }
 
-    .primary-btn,
-    .secondary-btn {
+    .btn-primary,
+    .btn-secondary {
       border: none;
       border-radius: 14px;
-      padding: 14px 22px;
+      padding: 14px 20px;
+      cursor: pointer;
       font-size: 15px;
       font-weight: 600;
-      cursor: pointer;
       transition: 0.2s ease;
     }
 
-    .primary-btn {
-      background: linear-gradient(135deg, #3b82f6, #22c55e);
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue), var(--green));
       color: white;
-      box-shadow: 0 10px 24px rgba(59, 130, 246, 0.25);
+      box-shadow: 0 10px 24px rgba(59,130,246,0.28);
     }
 
-    .primary-btn:hover {
+    .btn-primary:hover {
       transform: translateY(-1px);
-      box-shadow: 0 14px 28px rgba(59, 130, 246, 0.3);
     }
 
-    .secondary-btn {
+    .btn-secondary {
       background: rgba(255,255,255,0.05);
-      color: #eaf1ff;
-      border: 1px solid rgba(255,255,255,0.08);
+      color: #eef2ff;
+      border: 1px solid var(--border);
     }
 
-    .secondary-btn:hover {
-      background: rgba(255,255,255,0.09);
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.08);
     }
 
     .result-box {
-      margin-top: 24px;
-      padding: 22px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      min-height: 140px;
-      color: #edf3ff;
-      white-space: pre-line;
+      margin-top: 22px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      min-height: 150px;
+      padding: 20px;
+      color: #eef3ff;
       line-height: 1.72;
+      white-space: pre-line;
       font-size: 15px;
     }
 
-    .mini-label {
-      display: inline-block;
-      font-size: 12px;
-      color: #8ba1c7;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 999px;
-      padding: 7px 12px;
-      margin-bottom: 12px;
-    }
-
-    .steps {
+    .quick-stats {
       display: grid;
-      gap: 16px;
-    }
-
-    .step-card {
-      padding: 18px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .step-card h3 {
-      margin: 0 0 10px;
-      font-size: 17px;
-      color: #eef4ff;
-    }
-
-    .step-card p {
-      margin: 0;
-      color: #9aa7bd;
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-      margin-top: 26px;
-    }
-
-    .feature {
-      padding: 20px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .feature h4 {
-      margin: 0 0 10px;
-      font-size: 16px;
-      color: #eef4ff;
-    }
-
-    .feature p {
-      margin: 0;
-      font-size: 14px;
-      line-height: 1.65;
-      color: #9aa7bd;
-    }
-
-    #archivoPreview {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
       margin-top: 18px;
     }
 
-    .small-note {
-      margin-top: 12px;
-      color: #7f8aa0;
+    .stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .stat h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #eef4ff;
+    }
+
+    .stat p {
+      margin: 0;
+      color: var(--muted);
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
-    @media (max-width: 980px) {
-      .grid {
+    .feature-grid {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .feature-card h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+
+    .feature-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      color: #7e89a0;
+      font-size: 13px;
+      padding: 16px 10px 0;
+    }
+
+    .footer span {
+      color: #dbe7ff;
+    }
+
+    @media (max-width: 1080px) {
+      .main-grid {
         grid-template-columns: 1fr;
       }
 
-      .features {
-        grid-template-columns: 1fr 1fr;
+      .provider-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
 
-      .hero h1 {
-        font-size: 42px;
+      .hero h2 {
+        font-size: 46px;
       }
     }
 
-    @media (max-width: 640px) {
-      .features {
+    @media (max-width: 720px) {
+      .provider-grid,
+      .feature-grid,
+      .quick-stats {
         grid-template-columns: 1fr;
       }
 
-      .hero h1 {
+      .hero h2 {
         font-size: 34px;
+        letter-spacing: -1.2px;
       }
 
       .hero p {
         font-size: 16px;
       }
 
-      .main-card,
-      .sidebar-card {
-        padding: 20px;
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
       }
 
-      .action-row {
+      .actions {
         flex-direction: column;
       }
 
-      .primary-btn,
-      .secondary-btn {
+      .btn-primary,
+      .btn-secondary {
         width: 100%;
       }
     }
   </style>
 </head>
-
 <body>
-  <div class="page">
-    <div class="container">
-      <div class="hero">
-        <div class="badge">MemoryBridge AI</div>
-        <h1>
-          Llévate tu <span class="gradient-text">contexto</span><br>
-          a cualquier IA
-        </h1>
-        <p>
-          Convierte tus chats en un perfil inteligente, portable y listo para usar.
-          No empieces de cero cada vez que pruebas una nueva inteligencia artificial.
-        </p>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="brand-badge">MB</div>
+        <div class="brand-text">
+          <h1>MemoryBridge AI</h1>
+          <p>portable context for every AI</p>
+        </div>
       </div>
 
-      <div class="grid">
-        <div class="card main-card">
-          <div class="mini-label">Crea tu perfil</div>
-          <h2 class="section-title">Sube tus chats o pégalos acá</h2>
-          <p class="section-subtitle">
-            Elige la forma más fácil para ti. Puedes pegar conversaciones directamente
-            o subir archivos de texto para analizarlos con IA.
-          </p>
+      <div class="header-right">
+        <div class="pill">Perfiles inteligentes</div>
+        <div class="pill">Compatible con varias IAs</div>
+      </div>
+    </div>
 
-          <div class="toggle-row">
-            <button onclick="mostrarModo('texto')" id="btnTexto" class="toggle-btn active">Pegar chats</button>
-            <button onclick="mostrarModo('archivo')" id="btnArchivo" class="toggle-btn">Subir archivo</button>
+    <div class="hero">
+      <div class="hero-badge">migra tu contexto sin empezar de cero</div>
+      <h2>
+        Lleva tu <span class="gradient">memoria</span><br>
+        a cualquier IA
+      </h2>
+      <p>
+        Sube tus chats, genera tu perfil y conviértelo en una identidad portable.
+        Más rápido, más claro y mucho más útil que volver a explicar quién eres cada vez.
+      </p>
+    </div>
+
+    <div class="main-grid">
+      <div class="card left-card">
+        <div class="mini-badge">Paso 1 · elige desde dónde vienes</div>
+        <h3 class="section-title">Importa desde tu IA actual</h3>
+        <p class="section-subtitle">
+          Escoge la plataforma desde la que quieres traer tus chats. Te mostramos los pasos según la opción elegida.
+        </p>
+
+        <div class="provider-grid">
+          <div class="provider-card active" onclick="seleccionarProveedor('chatgpt')" id="provider-chatgpt">
+            <div class="provider-top">
+              <div class="provider-icon">💬</div>
+            </div>
+            <h3>ChatGPT</h3>
+            <p>Exporta tu historial y tráelo acá para convertirlo en perfil.</p>
           </div>
 
-          <div id="modoTexto">
+          <div class="provider-card" onclick="seleccionarProveedor('claude')" id="provider-claude">
+            <div class="provider-top">
+              <div class="provider-icon">🧠</div>
+            </div>
+            <h3>Claude</h3>
+            <p>Importa conversaciones desde la configuración de privacidad.</p>
+          </div>
+
+          <div class="provider-card" onclick="seleccionarProveedor('gemini')" id="provider-gemini">
+            <div class="provider-top">
+              <div class="provider-icon">✨</div>
+            </div>
+            <h3>Gemini</h3>
+            <p>Descarga tus datos de Gemini y llévalos a MemoryBridge.</p>
+          </div>
+
+          <div class="provider-card" onclick="seleccionarProveedor('otro')" id="provider-otro">
+            <div class="provider-top">
+              <div class="provider-icon">📁</div>
+            </div>
+            <h3>Otro</h3>
+            <p>Pega texto o sube un archivo compatible manualmente.</p>
+          </div>
+        </div>
+
+        <div class="steps-box">
+          <h4 class="steps-title" id="stepsTitle">Pasos para traer tus chats desde ChatGPT</h4>
+          <ol class="steps-list" id="stepsList">
+            <li>Abre ChatGPT.</li>
+            <li>Ve a configuración o settings.</li>
+            <li>Entra a controles de datos.</li>
+            <li>Exporta tus datos o tu historial.</li>
+            <li>Cuando tengas el archivo o el texto, pégalo o súbelo acá.</li>
+          </ol>
+        </div>
+
+        <div class="mini-badge">Paso 2 · trae tus conversaciones</div>
+        <h3 class="section-title">Pegar chats o subir archivo</h3>
+        <p class="section-subtitle">
+          Puedes hacerlo manualmente o por archivo. Entre más real y largo sea el contenido, mejor queda el perfil.
+        </p>
+
+        <div class="mode-switch">
+          <button onclick="mostrarModo('texto')" id="btnTexto" class="mode-btn active">Pegar chats</button>
+          <button onclick="mostrarModo('archivo')" id="btnArchivo" class="mode-btn">Subir archivo</button>
+        </div>
+
+        <div id="modoTexto">
+          <div class="textarea-wrap">
             <textarea id="chatInput" class="input-box" placeholder="Pega aquí tus conversaciones..."></textarea>
           </div>
+          <div class="char-counter" id="charCounter">0 caracteres</div>
+        </div>
 
-          <div id="modoArchivo" style="display:none;">
-            <div class="upload-box">
-              <input type="file" id="fileInput" accept=".txt,.md,.json,.csv" onchange="leerArchivo()" />
-              <p>Sube un archivo de texto con tus chats para analizarlo.</p>
-              <p>Formatos permitidos por ahora: .txt, .md, .json, .csv</p>
-            </div>
-
-            <div id="archivoPreview" style="display:none;">
-              <p class="section-subtitle" style="margin-top:18px; margin-bottom:10px;">Texto detectado del archivo:</p>
-              <textarea id="archivoTexto" class="input-box"></textarea>
-            </div>
+        <div id="modoArchivo" style="display:none;">
+          <div class="dropzone" id="dropzone">
+            <strong>Arrastra tu archivo acá</strong>
+            <p>o selecciónalo manualmente</p>
+            <label class="file-btn" for="fileInput">Elegir archivo</label>
+            <input class="file-input" type="file" id="fileInput" accept=".txt,.md,.json,.csv" />
+            <p>Formatos soportados por ahora: .txt, .md, .json, .csv</p>
           </div>
 
-          <div class="action-row">
-            <button id="botonCrear" class="primary-btn" onclick="crearPerfil()">Crear mi perfil</button>
-            <button class="secondary-btn" onclick="copiarPerfil()">Copiar perfil</button>
-          </div>
-
-          <div id="resultado" class="result-box">Tu perfil aparecerá acá.</div>
-          <div class="small-note">
-            Consejo: entre más largo y real sea el chat, mejor sale el perfil.
+          <div class="preview-box" id="archivoPreview">
+            <p class="section-subtitle" style="margin-bottom:10px;">Vista previa del texto detectado:</p>
+            <textarea id="archivoTexto" class="input-box"></textarea>
+            <div class="char-counter" id="fileCharCounter">0 caracteres</div>
           </div>
         </div>
 
-        <div class="card sidebar-card">
-          <div class="mini-label">Importar desde otras IAs</div>
-          <h2 class="section-title">Cómo traer tus conversaciones</h2>
-          <p class="section-subtitle">
-            Estas son las formas más fáciles para mover tu historial a MemoryBridge.
-          </p>
+        <div class="actions">
+          <button id="botonCrear" class="btn-primary" onclick="crearPerfil()">Crear mi perfil</button>
+          <button class="btn-secondary" onclick="copiarPerfil()">Copiar perfil</button>
+        </div>
 
-          <div class="steps">
-            <div class="step-card">
-              <h3>ChatGPT</h3>
-              <p>
-                Entra a configuración, busca controles de datos y exporta tu información.
-                Luego usa el archivo o copia el texto importante acá.
-              </p>
-            </div>
+        <div id="resultado" class="result-box">Tu perfil aparecerá acá.</div>
+      </div>
 
-            <div class="step-card">
-              <h3>Claude</h3>
-              <p>
-                Abre configuración y privacidad, exporta tus datos y trae el contenido
-                relevante a esta página.
-              </p>
-            </div>
+      <div class="card right-card">
+        <div class="mini-badge">Por qué esto importa</div>
+        <h3 class="section-title">Haz que se sienta como tuya</h3>
+        <p class="section-subtitle">
+          MemoryBridge transforma conversaciones desordenadas en una identidad útil para otras IAs.
+        </p>
 
-            <div class="step-card">
-              <h3>Gemini</h3>
-              <p>
-                Descarga tus datos de Gemini, abre el contenido y pégalo o súbelo
-                en un formato de texto compatible.
-              </p>
-            </div>
+        <div class="quick-stats">
+          <div class="stat">
+            <h4>No empieces de cero</h4>
+            <p>Conserva tu tono, tus gustos y la forma en que prefieres que te respondan.</p>
+          </div>
+          <div class="stat">
+            <h4>Ahorra tiempo</h4>
+            <p>Evita repetir el mismo contexto una y otra vez cuando cambias de herramienta.</p>
+          </div>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h4>Perfil portable</h4>
+            <p>Llévate tu identidad a otras IAs en formato listo para copiar.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Resultado limpio</h4>
+            <p>Tu información se resume de forma útil, clara y accionable.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Input flexible</h4>
+            <p>Pega chats o arrastra archivos según lo que tengas a mano.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Más producto</h4>
+            <p>Se siente como una herramienta seria y no como una simple demo.</p>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="features">
-        <div class="feature">
-          <h4>No empieces de cero</h4>
-          <p>Conserva tu tono, tus gustos y la forma en la que te gusta que te respondan.</p>
-        </div>
-
-        <div class="feature">
-          <h4>Más portable</h4>
-          <p>Usa un perfil listo para copiar en otra IA sin tener que explicarte otra vez.</p>
-        </div>
-
-        <div class="feature">
-          <h4>Más rápido</h4>
-          <p>Ahorra tiempo cada vez que pruebas una nueva herramienta o chatbot.</p>
-        </div>
-
-        <div class="feature">
-          <h4>Más claro</h4>
-          <p>Convierte conversaciones desordenadas en una identidad útil y estructurada.</p>
-        </div>
-      </div>
+    <div class="footer">
+      Built with <span>MemoryBridge AI</span> · portable identity for modern chatbots
     </div>
   </div>
 
   <script>
+    let proveedorActual = "chatgpt";
+
+    const providerSteps = {
+      chatgpt: {
+        titulo: "Pasos para traer tus chats desde ChatGPT",
+        pasos: [
+          "Abre ChatGPT.",
+          "Ve a configuración o settings.",
+          "Entra a controles de datos.",
+          "Exporta tus datos o tu historial.",
+          "Cuando tengas el archivo o el texto, pégalo o súbelo acá."
+        ]
+      },
+      claude: {
+        titulo: "Pasos para traer tus chats desde Claude",
+        pasos: [
+          "Abre Claude en web o escritorio.",
+          "Ve a settings.",
+          "Entra a privacy.",
+          "Busca la opción para exportar tus datos.",
+          "Trae el texto o el archivo acá para crear tu perfil."
+        ]
+      },
+      gemini: {
+        titulo: "Pasos para traer tus chats desde Gemini",
+        pasos: [
+          "Abre Gemini o la configuración de tu cuenta Google.",
+          "Busca la opción para descargar tus datos de Gemini.",
+          "Descarga el contenido disponible.",
+          "Abre el archivo exportado.",
+          "Pega el texto o súbelo en un formato compatible."
+        ]
+      },
+      otro: {
+        titulo: "Traer tus chats desde otra herramienta",
+        pasos: [
+          "Busca si esa herramienta permite exportar conversaciones.",
+          "Si te da un archivo de texto, súbelo.",
+          "Si no, copia y pega las conversaciones manualmente.",
+          "Asegúrate de que el contenido tenga suficiente texto.",
+          "Genera tu perfil desde acá."
+        ]
+      }
+    };
+
+    function seleccionarProveedor(proveedor) {
+      proveedorActual = proveedor;
+
+      document.querySelectorAll(".provider-card").forEach(card => {
+        card.classList.remove("active");
+      });
+
+      const activeCard = document.getElementById("provider-" + proveedor);
+      if (activeCard) activeCard.classList.add("active");
+
+      const info = providerSteps[proveedor];
+      document.getElementById("stepsTitle").innerText = info.titulo;
+
+      const stepsList = document.getElementById("stepsList");
+      stepsList.innerHTML = "";
+      info.pasos.forEach(paso => {
+        const li = document.createElement("li");
+        li.textContent = paso;
+        stepsList.appendChild(li);
+      });
+    }
+
     function mostrarModo(modo) {
       const modoTexto = document.getElementById("modoTexto");
       const modoArchivo = document.getElementById("modoArchivo");
@@ -483,9 +790,17 @@
       }
     }
 
-    function leerArchivo() {
-      const input = document.getElementById("fileInput");
-      const file = input.files[0];
+    function actualizarContadorTexto() {
+      const texto = document.getElementById("chatInput").value;
+      document.getElementById("charCounter").innerText = `${texto.length} caracteres`;
+    }
+
+    function actualizarContadorArchivo() {
+      const texto = document.getElementById("archivoTexto").value;
+      document.getElementById("fileCharCounter").innerText = `${texto.length} caracteres`;
+    }
+
+    function leerArchivo(file) {
       if (!file) return;
 
       const reader = new FileReader();
@@ -494,6 +809,7 @@
         const contenido = e.target.result;
         document.getElementById("archivoPreview").style.display = "block";
         document.getElementById("archivoTexto").value = contenido;
+        actualizarContadorArchivo();
       };
 
       reader.readAsText(file);
@@ -523,7 +839,7 @@
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ texto })
+          body: JSON.stringify({ texto, proveedor: proveedorActual })
         });
 
         const data = await respuesta.json();
@@ -554,6 +870,45 @@
       navigator.clipboard.writeText(texto);
       alert("Perfil copiado 🚀");
     }
+
+    document.getElementById("chatInput").addEventListener("input", actualizarContadorTexto);
+
+    const fileInput = document.getElementById("fileInput");
+    fileInput.addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      leerArchivo(file);
+    });
+
+    const archivoTexto = document.getElementById("archivoTexto");
+    archivoTexto.addEventListener("input", actualizarContadorArchivo);
+
+    const dropzone = document.getElementById("dropzone");
+
+    ["dragenter", "dragover"].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add("dragover");
+      });
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove("dragover");
+      });
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      const files = e.dataTransfer.files;
+      if (files && files[0]) {
+        fileInput.files = files;
+        leerArchivo(files[0]);
+      }
+    });
+
+    actualizarContadorTexto();
   </script>
 </body>
 </html>
