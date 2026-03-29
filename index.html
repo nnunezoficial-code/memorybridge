@@ -9,12 +9,33 @@
   <h1>Llévate tu contexto a cualquier IA</h1>
   <p>Sube tus chats y crea tu perfil inteligente en segundos</p>
 
-  <textarea placeholder="Pega aquí tus chats..." style="width: 80%; height: 200px;"></textarea>
+  <textarea id="chatInput" placeholder="Pega aquí tus chats..." style="width: 80%; height: 200px;"></textarea>
   <br><br>
 
-  <button onclick="alert('Pronto podrás crear tu perfil 🚀')" style="padding: 10px 20px;">
+  <button onclick="crearPerfil()" style="padding: 10px 20px;">
     Crear mi perfil
   </button>
+
+  <h2 id="resultado" style="margin-top: 30px;"></h2>
+
+  <script>
+    function crearPerfil() {
+      let texto = document.getElementById("chatInput").value;
+
+      if (texto.length < 50) {
+        alert("Pega más texto para analizar 😅");
+        return;
+      }
+
+      document.getElementById("resultado").innerText =
+        "Perfil detectado:\n\n" +
+        "- Idioma: Español\n" +
+        "- Tono: Casual\n" +
+        "- Estilo: Directo\n" +
+        "- Intereses: (detectando...)\n\n" +
+        "⚠️ Esto es una demo. Próximamente análisis real con IA 🚀";
+    }
+  </script>
 
 </body>
 </html>
