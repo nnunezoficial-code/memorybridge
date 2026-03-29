@@ -9,40 +9,32 @@
 
   <div style="max-width: 900px; margin: 40px auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center;">
 
-    <!-- Logo / Nombre -->
     <div style="display:inline-block; background:#111; color:white; padding:8px 16px; border-radius:999px; font-size:14px; margin-bottom:20px;">
       MemoryBridge AI
     </div>
 
-    <!-- Título -->
     <h1 style="font-size: 42px; margin-bottom: 10px;">
       Llévate tu contexto a cualquier IA
     </h1>
 
-    <!-- Subtítulo -->
     <p style="font-size: 18px; color: #555; margin-bottom: 30px;">
       Sube tus chats y crea tu perfil inteligente en segundos
     </p>
 
-    <!-- Input -->
-    <textarea id="chatInput" placeholder="Pega aquí tus chats..." 
-      style="width: 100%; height: 220px; padding: 15px; font-size: 16px; border-radius: 12px; border: 1px solid #ccc; resize: vertical;">
-    </textarea>
+    <textarea id="chatInput" placeholder="Pega aquí tus chats..."
+      style="width: 100%; height: 220px; padding: 15px; font-size: 16px; border-radius: 12px; border: 1px solid #ccc; resize: vertical;"></textarea>
 
     <br><br>
 
-    <!-- Botón -->
-    <button onclick="crearPerfil()" 
+    <button id="botonCrear" onclick="crearPerfil()"
       style="background: black; color: white; border: none; padding: 14px 28px; font-size: 16px; border-radius: 12px; cursor: pointer;">
       Crear mi perfil
     </button>
 
-    <!-- Resultado -->
-    <div id="resultado" 
+    <div id="resultado"
       style="margin-top: 40px; text-align: left; white-space: pre-line; font-size: 18px; line-height: 1.6;">
     </div>
 
-    <!-- Beneficios -->
     <div style="margin-top: 50px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
 
       <div style="background: #fafafa; padding: 20px; border-radius: 16px; width: 220px;">
@@ -64,23 +56,43 @@
 
   </div>
 
-  <!-- Script -->
   <script>
-    function crearPerfil() {
-      let texto = document.getElementById("chatInput").value;
+    async function crearPerfil() {
+      const texto = document.getElementById("chatInput").value;
+      const resultado = document.getElementById("resultado");
+      const boton = document.getElementById("botonCrear");
 
       if (texto.length < 50) {
         alert("Pega más texto para analizar 😅");
         return;
       }
 
-      document.getElementById("resultado").innerText =
-        "Perfil detectado:\n\n" +
-        "• Idioma: Español\n" +
-        "• Tono: Casual\n" +
-        "• Estilo: Directo\n" +
-        "• Intereses: (detectando...)\n\n" +
-        "⚠️ Esto es una demo. Próximamente análisis real con IA 🚀";
+      resultado.innerText = "Analizando con IA...";
+      boton.disabled = true;
+      boton.innerText = "Procesando...";
+
+      try {
+        const respuesta = await fetch("/api/generar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ texto })
+        });
+
+        const data = await respuesta.json();
+
+        if (data.resultado) {
+          resultado.innerText = data.resultado;
+        } else {
+          resultado.innerText = "Hubo un error al generar el perfil.";
+        }
+      } catch (error) {
+        resultado.innerText = "Error conectando con la IA.";
+      }
+
+      boton.disabled = false;
+      boton.innerText = "Crear mi perfil";
     }
   </script>
 
