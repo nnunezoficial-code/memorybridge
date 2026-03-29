@@ -9,32 +9,45 @@
 
   <div style="max-width: 900px; margin: 40px auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center;">
 
+    <!-- Logo -->
     <div style="display:inline-block; background:#111; color:white; padding:8px 16px; border-radius:999px; font-size:14px; margin-bottom:20px;">
       MemoryBridge AI
     </div>
 
+    <!-- Título -->
     <h1 style="font-size: 42px; margin-bottom: 10px;">
       Llévate tu contexto a cualquier IA
     </h1>
 
+    <!-- Subtítulo -->
     <p style="font-size: 18px; color: #555; margin-bottom: 30px;">
       Sube tus chats y crea tu perfil inteligente en segundos
     </p>
 
+    <!-- Input -->
     <textarea id="chatInput" placeholder="Pega aquí tus chats..."
       style="width: 100%; height: 220px; padding: 15px; font-size: 16px; border-radius: 12px; border: 1px solid #ccc; resize: vertical;"></textarea>
 
     <br><br>
 
+    <!-- Botón -->
     <button id="botonCrear" onclick="crearPerfil()"
       style="background: black; color: white; border: none; padding: 14px 28px; font-size: 16px; border-radius: 12px; cursor: pointer;">
       Crear mi perfil
     </button>
 
+    <!-- Resultado -->
     <div id="resultado"
       style="margin-top: 40px; text-align: left; white-space: pre-line; font-size: 18px; line-height: 1.6;">
     </div>
 
+    <!-- BOTÓN COPIAR -->
+    <button onclick="copiarPerfil()" 
+      style="margin-top:20px; padding:12px 24px; border:none; border-radius:12px; background:black; color:white; cursor:pointer;">
+      Copiar perfil
+    </button>
+
+    <!-- Beneficios -->
     <div style="margin-top: 50px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
 
       <div style="background: #fafafa; padding: 20px; border-radius: 16px; width: 220px;">
@@ -85,15 +98,25 @@
         if (data.resultado) {
           resultado.innerText = data.resultado;
         } else {
-          resultado.innerText = "Hubo un error al generar el perfil.";
+          resultado.innerText = "Error generando perfil.";
         }
       } catch (error) {
-        resultado.innerText = "Error conectando con la IA.";
+        resultado.innerText = "Error conectando con IA.";
       }
 
       boton.disabled = false;
       boton.innerText = "Crear mi perfil";
     }
+
+    function copiarPerfil() {
+      const texto = document.getElementById("resultado").innerText;
+      navigator.clipboard.writeText(texto);
+      alert("Perfil copiado 🚀");
+    }
+  </script>
+
+</body>
+</html>
   </script>
 
 </body>
