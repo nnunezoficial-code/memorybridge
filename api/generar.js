@@ -27,17 +27,34 @@ export default async function handler(req, res) {
             role: "user",
             content: `Analiza este chat y crea un perfil con tono, estilo, intereses y preferencias:\n\n${texto}`
           }
-        ],
+        ]
       }),
     });
 
     const data = await respuesta.json();
 
-    const resultado = data.choices?.[0]?.message?.content || "No se pudo generar perfil";
+    if (!respuesta.ok) {
+      return res.status(500).json({
+        error: "Error de OpenAI",
+        detalle: data
+      });
+    }
 
-    res.status(200).json({ resultado });
+    const resultado = data.choices?.[0]?.message?.content;
+
+    if (!resultado) {
+      return res.status(500).json({
+        error: "No se pudo generar perfil",
+        detalle: data
+      });
+    }
+
+    return res.status(200).json({ resultado });
 
   } catch (error) {
-    res.status(500).json({ error: "Error en el servidor" });
+    return res.status(500).json({
+      error: "Error en el servidor",
+      detalle: error.message
+    });
   }
 }
