@@ -424,6 +424,101 @@
       font-size: 15px;
     }
 
+    .result-placeholder {
+      color: var(--muted);
+    }
+
+    .result-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .result-main-title {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -0.8px;
+    }
+
+    .result-subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .profile-hero {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.16), rgba(34,197,94,0.12));
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .profile-chip {
+      display: inline-block;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #dbe7ff;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 10px;
+    }
+
+    .result-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .result-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .result-card h4 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: #eef4ff;
+    }
+
+    .result-card p,
+    .result-card div {
+      margin: 0;
+      color: #dbe7ff;
+      font-size: 14px;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    .bullet-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #dbe7ff;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .prompt-box {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(7, 12, 24, 0.72);
+      border: 1px solid rgba(59,130,246,0.18);
+    }
+
+    .prompt-box h4 {
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+
+    .prompt-text {
+      color: #dbe7ff;
+      font-size: 14px;
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+
     .quick-stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -506,7 +601,8 @@
     @media (max-width: 720px) {
       .provider-grid,
       .feature-grid,
-      .quick-stats {
+      .quick-stats,
+      .result-cards {
         grid-template-columns: 1fr;
       }
 
@@ -656,7 +752,9 @@
           <button class="btn-secondary" onclick="copiarPerfil()">Copiar perfil</button>
         </div>
 
-        <div id="resultado" class="result-box">Tu perfil aparecerá acá.</div>
+        <div id="resultado" class="result-box">
+          <div class="result-placeholder">Tu perfil aparecerá acá.</div>
+        </div>
       </div>
 
       <div class="card right-card">
@@ -815,6 +913,156 @@
       reader.readAsText(file);
     }
 
+    function escaparHTML(texto) {
+      return texto
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function extraerSeccion(texto, inicio, siguientes) {
+      const startIndex = texto.indexOf(inicio);
+      if (startIndex === -1) return "";
+
+      const desde = startIndex + inicio.length;
+      let hasta = texto.length;
+
+      for (const siguiente of siguientes) {
+        const idx = texto.indexOf(siguiente, desde);
+        if (idx !== -1 && idx < hasta) {
+          hasta = idx;
+        }
+      }
+
+      return texto.slice(desde, hasta).trim();
+    }
+
+    function convertirLista(texto) {
+      const items = texto
+        .split("\n")
+        .map(x => x.trim())
+        .filter(x => x)
+        .map(x => x.replace(/^[-•]\s*/, "").trim())
+        .filter(x => x);
+
+      if (!items.length) {
+        return `<p>${escaparHTML(texto)}</p>`;
+      }
+
+      return `<ul class="bullet-list">${items.map(item => `<li>${escaparHTML(item)}</li>`).join("")}</ul>`;
+    }
+
+    function renderizarResultado(texto) {
+      const nombre = extraerSeccion(texto, "🧠 Nombre del perfil:", [
+        "🎯 Personalidad:",
+        "💬 Tono de comunicación:",
+        "✍️ Estilo de escritura:",
+        "🔥 Intereses principales:",
+        "🧩 Contexto importante:",
+        "🤖 Cómo debería responderle una IA:",
+        "⚡ Prompt listo para copiar:"
+      ]);
+
+      const personalidad = extraerSeccion(texto, "🎯 Personalidad:", [
+        "💬 Tono de comunicación:",
+        "✍️ Estilo de escritura:",
+        "🔥 Intereses principales:",
+        "🧩 Contexto importante:",
+        "🤖 Cómo debería responderle una IA:",
+        "⚡ Prompt listo para copiar:"
+      ]);
+
+      const tono = extraerSeccion(texto, "💬 Tono de comunicación:", [
+        "✍️ Estilo de escritura:",
+        "🔥 Intereses principales:",
+        "🧩 Contexto importante:",
+        "🤖 Cómo debería responderle una IA:",
+        "⚡ Prompt listo para copiar:"
+      ]);
+
+      const estilo = extraerSeccion(texto, "✍️ Estilo de escritura:", [
+        "🔥 Intereses principales:",
+        "🧩 Contexto importante:",
+        "🤖 Cómo debería responderle una IA:",
+        "⚡ Prompt listo para copiar:"
+      ]);
+
+      const intereses = extraerSeccion(texto, "🔥 Intereses principales:", [
+        "🧩 Contexto importante:",
+        "🤖 Cómo debería responderle una IA:",
+        "⚡ Prompt listo para copiar:"
+      ]);
+
+      const contexto = extraerSeccion(texto, "🧩 Contexto importante:", [
+        "🤖 Cómo debería responderle una IA:",
+        "⚡ Prompt listo para copiar:"
+      ]);
+
+      const responder = extraerSeccion(texto, "🤖 Cómo debería responderle una IA:", [
+        "⚡ Prompt listo para copiar:"
+      ]);
+
+      const prompt = extraerSeccion(texto, "⚡ Prompt listo para copiar:", []);
+
+      const resultado = document.getElementById("resultado");
+
+      const tieneFormato = nombre || personalidad || tono || estilo || intereses || contexto || responder || prompt;
+
+      if (!tieneFormato) {
+        resultado.innerHTML = `<div class="prompt-box"><div class="prompt-text">${escaparHTML(texto)}</div></div>`;
+        return;
+      }
+
+      resultado.innerHTML = `
+        <div class="result-grid">
+          <div class="profile-hero">
+            <div class="profile-chip">Perfil generado</div>
+            <h3 class="result-main-title">${escaparHTML(nombre || "Perfil detectado")}</h3>
+            <p class="result-subtitle">Este es el resumen portable de tu identidad para usarla en otras IAs.</p>
+          </div>
+
+          <div class="result-cards">
+            <div class="result-card">
+              <h4>🎯 Personalidad</h4>
+              <div>${escaparHTML(personalidad || "No detectado")}</div>
+            </div>
+
+            <div class="result-card">
+              <h4>💬 Tono de comunicación</h4>
+              <div>${escaparHTML(tono || "No detectado")}</div>
+            </div>
+
+            <div class="result-card">
+              <h4>✍️ Estilo de escritura</h4>
+              <div>${escaparHTML(estilo || "No detectado")}</div>
+            </div>
+
+            <div class="result-card">
+              <h4>🤖 Cómo debería responderle una IA</h4>
+              <div>${escaparHTML(responder || "No detectado")}</div>
+            </div>
+
+            <div class="result-card">
+              <h4>🔥 Intereses principales</h4>
+              ${convertirLista(intereses || "No detectado")}
+            </div>
+
+            <div class="result-card">
+              <h4>🧩 Contexto importante</h4>
+              ${convertirLista(contexto || "No detectado")}
+            </div>
+          </div>
+
+          <div class="prompt-box">
+            <h4>⚡ Prompt listo para copiar</h4>
+            <div class="prompt-text">${escaparHTML(prompt || "No detectado")}</div>
+          </div>
+        </div>
+      `;
+    }
+
     async function crearPerfil() {
       const resultado = document.getElementById("resultado");
       const boton = document.getElementById("botonCrear");
@@ -829,7 +1077,7 @@
         return;
       }
 
-      resultado.innerText = "Analizando con IA...";
+      resultado.innerHTML = `<div class="result-placeholder">Analizando con IA...</div>`;
       boton.disabled = true;
       boton.innerText = "Procesando...";
 
@@ -845,14 +1093,14 @@
         const data = await respuesta.json();
 
         if (data.resultado) {
-          resultado.innerText = data.resultado;
+          renderizarResultado(data.resultado);
         } else if (data.error) {
-          resultado.innerText = "Error: " + data.error;
+          resultado.innerHTML = `<div class="prompt-box"><div class="prompt-text">Error: ${escaparHTML(data.error)}</div></div>`;
         } else {
-          resultado.innerText = "Hubo un error generando el perfil.";
+          resultado.innerHTML = `<div class="prompt-box"><div class="prompt-text">Hubo un error generando el perfil.</div></div>`;
         }
       } catch (error) {
-        resultado.innerText = "Error conectando con la IA.";
+        resultado.innerHTML = `<div class="prompt-box"><div class="prompt-text">Error conectando con la IA.</div></div>`;
       }
 
       boton.disabled = false;
@@ -860,9 +1108,10 @@
     }
 
     function copiarPerfil() {
-      const texto = document.getElementById("resultado").innerText;
+      const resultado = document.getElementById("resultado");
+      const texto = resultado.innerText;
 
-      if (!texto || texto.trim() === "" || texto === "Tu perfil aparecerá acá.") {
+      if (!texto || texto.trim() === "" || texto.includes("Tu perfil aparecerá acá.")) {
         alert("Todavía no hay perfil para copiar.");
         return;
       }
@@ -879,9 +1128,39 @@
       leerArchivo(file);
     });
 
+    const dropzone = document.getElementById("dropzone");
     const archivoTexto = document.getElementById("archivoTexto");
+
     archivoTexto.addEventListener("input", actualizarContadorArchivo);
 
+    ["dragenter", "dragover"].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add("dragover");
+      });
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove("dragover");
+      });
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      const files = e.dataTransfer.files;
+      if (files && files[0]) {
+        fileInput.files = files;
+        leerArchivo(files[0]);
+      }
+    });
+
+    actualizarContadorTexto();
+  </script>
+</body>
+</html>
     const dropzone = document.getElementById("dropzone");
 
     ["dragenter", "dragover"].forEach(eventName => {
