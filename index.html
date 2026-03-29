@@ -300,9 +300,9 @@
       position: relative;
     }
 
-    .input-box {
+    .input-box,
+    .small-input {
       width: 100%;
-      min-height: 240px;
       border-radius: 18px;
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.045);
@@ -310,11 +310,22 @@
       padding: 18px;
       font-size: 15px;
       line-height: 1.65;
-      resize: vertical;
       outline: none;
     }
 
-    .input-box::placeholder {
+    .input-box {
+      min-height: 240px;
+      resize: vertical;
+    }
+
+    .small-input {
+      min-height: unset;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+
+    .input-box::placeholder,
+    .small-input::placeholder {
       color: #7f8aa0;
     }
 
@@ -714,7 +725,15 @@
           </ol>
         </div>
 
-        <div class="mini-badge">Paso 2 · trae tus conversaciones</div>
+        <div class="mini-badge">Paso 2 · nombre de tu perfil</div>
+        <h3 class="section-title">Ponle nombre antes de guardarlo</h3>
+        <p class="section-subtitle">
+          Así puedes descargar varios perfiles con nombres distintos y se siente mucho más organizado.
+        </p>
+
+        <input id="nombrePerfilInput" class="small-input" type="text" placeholder="Ejemplo: Nicolas-business-profile" />
+
+        <div class="mini-badge">Paso 3 · trae tus conversaciones</div>
         <h3 class="section-title">Pegar chats o subir archivo</h3>
         <p class="section-subtitle">
           Puedes hacerlo manualmente o por archivo. Entre más real y largo sea el contenido, mejor queda el perfil.
@@ -1183,18 +1202,29 @@
       alert("Prompt final copiado ⚡");
     }
 
+    function limpiarNombreArchivo(nombre) {
+      return nombre
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-zA-Z0-9-_]/g, "")
+        .toLowerCase();
+    }
+
     function descargarPerfil() {
       if (!ultimoPerfilCompleto.trim()) {
         alert("Todavía no hay perfil para descargar.");
         return;
       }
 
+      const inputNombre = document.getElementById("nombrePerfilInput").value;
+      const nombreLimpio = limpiarNombreArchivo(inputNombre) || "memorybridge-profile";
+
       const blob = new Blob([ultimoPerfilCompleto], { type: "text/plain;charset=utf-8" });
       const url = URL.createObjectURL(blob);
 
       const enlace = document.createElement("a");
       enlace.href = url;
-      enlace.download = "memorybridge-profile.txt";
+      enlace.download = `${nombreLimpio}.txt`;
       document.body.appendChild(enlace);
       enlace.click();
       document.body.removeChild(enlace);
