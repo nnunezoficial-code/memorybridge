@@ -2,27 +2,49 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>MemoryBridge</title>
+  <title>MemoryBridge AI</title>
 </head>
+
 <body style="font-family: Arial, sans-serif; background: #f7f7f7; margin: 0; padding: 0;">
+
   <div style="max-width: 900px; margin: 40px auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center;">
 
-    <h1 style="font-size: 42px; margin-bottom: 10px;">Llévate tu contexto a cualquier IA</h1>
+    <!-- Logo / Nombre -->
+    <div style="display:inline-block; background:#111; color:white; padding:8px 16px; border-radius:999px; font-size:14px; margin-bottom:20px;">
+      MemoryBridge AI
+    </div>
+
+    <!-- Título -->
+    <h1 style="font-size: 42px; margin-bottom: 10px;">
+      Llévate tu contexto a cualquier IA
+    </h1>
+
+    <!-- Subtítulo -->
     <p style="font-size: 18px; color: #555; margin-bottom: 30px;">
       Sube tus chats y crea tu perfil inteligente en segundos
     </p>
 
-    <textarea id="chatInput" placeholder="Pega aquí tus chats..." style="width: 100%; height: 220px; padding: 15px; font-size: 16px; border-radius: 12px; border: 1px solid #ccc; resize: vertical;"></textarea>
+    <!-- Input -->
+    <textarea id="chatInput" placeholder="Pega aquí tus chats..." 
+      style="width: 100%; height: 220px; padding: 15px; font-size: 16px; border-radius: 12px; border: 1px solid #ccc; resize: vertical;">
+    </textarea>
 
     <br><br>
 
-    <button onclick="crearPerfil()" style="background: black; color: white; border: none; padding: 14px 28px; font-size: 16px; border-radius: 12px; cursor: pointer;">
+    <!-- Botón -->
+    <button onclick="crearPerfil()" 
+      style="background: black; color: white; border: none; padding: 14px 28px; font-size: 16px; border-radius: 12px; cursor: pointer;">
       Crear mi perfil
     </button>
 
-    <div id="resultado" style="margin-top: 40px; text-align: left; white-space: pre-line; font-size: 18px; line-height: 1.6;"></div>
+    <!-- Resultado -->
+    <div id="resultado" 
+      style="margin-top: 40px; text-align: left; white-space: pre-line; font-size: 18px; line-height: 1.6;">
+    </div>
 
+    <!-- Beneficios -->
     <div style="margin-top: 50px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+
       <div style="background: #fafafa; padding: 20px; border-radius: 16px; width: 220px;">
         <h3>No empieces de cero</h3>
         <p style="color: #666;">Conserva tu estilo, tus gustos y tu contexto.</p>
@@ -37,9 +59,12 @@
         <h3>Ahorra tiempo</h3>
         <p style="color: #666;">Evita repetir tu contexto una y otra vez.</p>
       </div>
+
     </div>
+
   </div>
 
+  <!-- Script -->
   <script>
     function crearPerfil() {
       let texto = document.getElementById("chatInput").value;
@@ -58,4 +83,6 @@
         "⚠️ Esto es una demo. Próximamente análisis real con IA 🚀";
     }
   </script>
+
 </body>
+</html>
