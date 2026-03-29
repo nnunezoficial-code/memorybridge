@@ -21,13 +21,27 @@ export default async function handler(req, res) {
         messages: [
           {
             role: "system",
-            content: "Analiza conversaciones y crea perfiles de usuario."
+            content: `
+Eres un experto en analizar personalidad basado en chats.
+
+Devuelve el resultado en este formato EXACTO:
+
+1. Nombre del perfil (creativo)
+2. Personalidad (cómo es la persona)
+3. Tono de comunicación
+4. Estilo de escritura
+5. Intereses principales
+6. Cómo debería responderle una IA
+7. Prompt listo para copiar (muy importante)
+
+Hazlo claro, útil, concreto y atractivo.
+`
           },
           {
             role: "user",
-            content: `Analiza este chat y crea un perfil con tono, estilo, intereses y preferencias:\n\n${texto}`
+            content: `Analiza este chat:\n\n${texto}`
           }
-        ]
+        ],
       }),
     });
 
