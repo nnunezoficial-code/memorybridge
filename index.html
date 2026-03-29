@@ -1,1275 +1,436 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MemoryBridge AI</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg: #0b1020;
-      --panel: rgba(15, 23, 42, 0.82);
-      --panel-2: rgba(255, 255, 255, 0.04);
-      --border: rgba(255, 255, 255, 0.08);
-      --text: #eef2ff;
-      --muted: #98a2b3;
-      --green: #22c55e;
-      --blue: #3b82f6;
-      --cyan: #22d3ee;
-      --shadow: 0 18px 50px rgba(0,0,0,0.32);
-      --radius: 22px;
-    }
-
-    body {
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(34,197,94,0.12), transparent 22%),
-        linear-gradient(180deg, #0a0f1d 0%, #111827 100%);
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 28px 18px 40px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      padding: 18px 20px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
-      backdrop-filter: blur(14px);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      margin-bottom: 26px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-badge {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--blue), var(--green));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      color: white;
-      box-shadow: 0 10px 30px rgba(59,130,246,0.28);
-    }
-
-    .brand-text h1 {
-      margin: 0;
-      font-size: 18px;
-      letter-spacing: -0.4px;
-    }
-
-    .brand-text p {
-      margin: 2px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .header-right {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
-      color: #dbe7ff;
-      font-size: 13px;
-    }
-
-    .hero {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .hero-badge {
-      display: inline-block;
-      margin-bottom: 18px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      color: #d9e6ff;
-      font-size: 13px;
-    }
-
-    .hero h2 {
-      margin: 0;
-      font-size: 58px;
-      line-height: 1.03;
-      letter-spacing: -2px;
-      font-weight: 800;
-    }
-
-    .gradient {
-      background: linear-gradient(90deg, #ffffff, #8ab4ff 50%, #7ef7d0 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero p {
-      max-width: 800px;
-      margin: 18px auto 0;
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 1.7;
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 22px;
-      align-items: start;
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-    }
-
-    .left-card,
-    .right-card {
-      padding: 24px;
-    }
-
-    .mini-badge {
-      display: inline-block;
-      font-size: 12px;
-      color: #a9c1ff;
-      padding: 7px 11px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      margin-bottom: 12px;
-    }
-
-    .section-title {
-      margin: 0;
-      font-size: 24px;
-      letter-spacing: -0.6px;
-    }
-
-    .section-subtitle {
-      margin: 10px 0 0;
-      font-size: 15px;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .provider-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 20px;
-      margin-bottom: 20px;
-    }
-
-    .provider-card {
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
-      border-radius: 18px;
-      padding: 16px;
-      cursor: pointer;
-      transition: 0.2s ease;
-      text-align: left;
-    }
-
-    .provider-card:hover {
-      transform: translateY(-2px);
-      background: rgba(255,255,255,0.07);
-    }
-
-    .provider-card.active {
-      border-color: rgba(34,197,94,0.55);
-      background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(34,197,94,0.14));
-      box-shadow: 0 12px 30px rgba(34,197,94,0.08);
-    }
-
-    .provider-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .provider-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      background: rgba(255,255,255,0.08);
-    }
-
-    .provider-card h3 {
-      margin: 0 0 6px;
-      font-size: 15px;
-    }
-
-    .provider-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.55;
-    }
-
-    .steps-box {
-      margin-top: 8px;
-      margin-bottom: 22px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
-      border-radius: 20px;
-      padding: 18px;
-    }
-
-    .steps-title {
-      margin: 0 0 12px;
-      font-size: 16px;
-      color: #eaf1ff;
-    }
-
-    .steps-list {
-      margin: 0;
-      padding-left: 18px;
-      color: var(--muted);
-      line-height: 1.75;
-      font-size: 14px;
-    }
-
-    .mode-switch {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-
-    .mode-btn {
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.05);
-      color: #dbe7ff;
-      padding: 12px 16px;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: 0.2s ease;
-      font-size: 14px;
-    }
-
-    .mode-btn:hover {
-      background: rgba(255,255,255,0.08);
-    }
-
-    .mode-btn.active {
-      background: linear-gradient(135deg, var(--blue), var(--green));
-      color: white;
-      border: none;
-      box-shadow: 0 10px 26px rgba(59,130,246,0.26);
-    }
-
-    .textarea-wrap {
-      position: relative;
-    }
-
-    .input-box,
-    .small-input {
-      width: 100%;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.045);
-      color: var(--text);
-      padding: 18px;
-      font-size: 15px;
-      line-height: 1.65;
-      outline: none;
-    }
-
-    .input-box {
-      min-height: 240px;
-      resize: vertical;
-    }
-
-    .small-input {
-      min-height: unset;
-      padding: 14px 16px;
-      margin-bottom: 16px;
-    }
-
-    .input-box::placeholder,
-    .small-input::placeholder {
-      color: #7f8aa0;
-    }
-
-    .char-counter {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 13px;
-      text-align: right;
-    }
-
-    .dropzone {
-      border: 1.6px dashed rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.03);
-      border-radius: 18px;
-      padding: 28px 20px;
-      text-align: center;
-      transition: 0.2s ease;
-    }
-
-    .dropzone.dragover {
-      border-color: rgba(34,197,94,0.75);
-      background: rgba(34,197,94,0.08);
-      transform: scale(1.01);
-    }
-
-    .dropzone strong {
-      display: block;
-      font-size: 17px;
-      margin-bottom: 8px;
-    }
-
-    .dropzone p {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .file-btn {
-      margin-top: 16px;
-      display: inline-block;
-      padding: 11px 16px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--border);
-      color: #eef2ff;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .file-input {
-      display: none;
-    }
-
-    .preview-box {
-      margin-top: 16px;
-      display: none;
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-      border: none;
-      border-radius: 14px;
-      padding: 14px 20px;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 600;
-      transition: 0.2s ease;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--blue), var(--green));
-      color: white;
-      box-shadow: 0 10px 24px rgba(59,130,246,0.28);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,0.05);
-      color: #eef2ff;
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.08);
-    }
-
-    .result-box {
-      margin-top: 22px;
-      background: rgba(255,255,255,0.045);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      min-height: 150px;
-      padding: 20px;
-      color: #eef3ff;
-      line-height: 1.72;
-      white-space: pre-line;
-      font-size: 15px;
-    }
-
-    .result-placeholder {
-      color: var(--muted);
-    }
-
-    .result-grid {
-      display: grid;
-      gap: 14px;
-    }
-
-    .result-main-title {
-      margin: 0;
-      font-size: 28px;
-      letter-spacing: -0.8px;
-    }
-
-    .result-subtitle {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .profile-hero {
-      padding: 18px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, rgba(59,130,246,0.16), rgba(34,197,94,0.12));
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .profile-chip {
-      display: inline-block;
-      padding: 7px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      color: #dbe7ff;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
-      margin-bottom: 10px;
-    }
-
-    .result-cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .result-card {
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .result-card h4 {
-      margin: 0 0 10px;
-      font-size: 15px;
-      color: #eef4ff;
-    }
-
-    .result-card p,
-    .result-card div {
-      margin: 0;
-      color: #dbe7ff;
-      font-size: 14px;
-      line-height: 1.7;
-      white-space: pre-line;
-    }
-
-    .bullet-list {
-      margin: 0;
-      padding-left: 18px;
-      color: #dbe7ff;
-      font-size: 14px;
-      line-height: 1.8;
-    }
-
-    .prompt-box {
-      padding: 18px;
-      border-radius: 18px;
-      background: rgba(7, 12, 24, 0.72);
-      border: 1px solid rgba(59,130,246,0.18);
-    }
-
-    .prompt-box h4 {
-      margin: 0 0 10px;
-      font-size: 15px;
-    }
-
-    .prompt-text {
-      color: #dbe7ff;
-      font-size: 14px;
-      line-height: 1.8;
-      white-space: pre-line;
-    }
-
-    .quick-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .stat {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-    }
-
-    .stat h4 {
-      margin: 0 0 8px;
-      font-size: 14px;
-      color: #eef4ff;
-    }
-
-    .stat p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.65;
-    }
-
-    .feature-grid {
-      margin-top: 22px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .feature-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-    }
-
-    .feature-card h4 {
-      margin: 0 0 8px;
-      font-size: 15px;
-    }
-
-    .feature-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.65;
-    }
-
-    .footer {
-      margin-top: 24px;
-      text-align: center;
-      color: #7e89a0;
-      font-size: 13px;
-      padding: 16px 10px 0;
-    }
-
-    .footer span {
-      color: #dbe7ff;
-    }
-
-    @media (max-width: 1080px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .provider-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .hero h2 {
-        font-size: 46px;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .provider-grid,
-      .feature-grid,
-      .quick-stats,
-      .result-cards {
-        grid-template-columns: 1fr;
-      }
-
-      .hero h2 {
-        font-size: 34px;
-        letter-spacing: -1.2px;
-      }
-
-      .hero p {
-        font-size: 16px;
-      }
-
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .actions {
-        flex-direction: column;
-      }
-
-      .btn-primary,
-      .btn-secondary {
-        width: 100%;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MemoryBridge AI</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<style>
+*{box-sizing:border-box;}
+
+body{
+margin:0;
+font-family:Inter,Arial;
+background:linear-gradient(180deg,#0a0f1d,#111827);
+color:#e5e7eb;
+}
+
+.container{
+max-width:1300px;
+margin:auto;
+padding:30px 20px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.logo{
+font-weight:700;
+font-size:20px;
+}
+
+.badge{
+background:#2563eb;
+padding:6px 12px;
+border-radius:999px;
+font-size:12px;
+}
+
+.hero{
+text-align:center;
+margin-bottom:30px;
+}
+
+.hero h1{
+font-size:42px;
+margin:0;
+}
+
+.hero p{
+color:#9ca3af;
+margin-top:10px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1.2fr 0.8fr;
+gap:20px;
+}
+
+.card{
+background:#111827;
+padding:24px;
+border-radius:18px;
+border:1px solid #1f2937;
+}
+
+.section-title{
+margin-top:0;
+font-size:18px;
+}
+
+.providers{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+margin-top:10px;
+}
+
+.provider{
+padding:14px;
+border-radius:14px;
+background:#0f172a;
+border:1px solid #1f2937;
+cursor:pointer;
+transition:0.2s;
+}
+
+.provider:hover{
+transform:translateY(-2px);
+}
+
+.provider.active{
+background:#2563eb;
+}
+
+.steps{
+margin-top:14px;
+background:#020617;
+padding:14px;
+border-radius:12px;
+font-size:13px;
+color:#9ca3af;
+}
+
+input,textarea{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:12px;
+border:1px solid #1f2937;
+background:#020617;
+color:white;
+}
+
+textarea{
+min-height:220px;
+resize:vertical;
+}
+
+.counter{
+text-align:right;
+font-size:12px;
+color:#6b7280;
+}
+
+.drop{
+border:2px dashed #334155;
+padding:20px;
+border-radius:14px;
+text-align:center;
+margin-top:12px;
+}
+
+.drop.drag{
+border-color:#2563eb;
+background:#0f172a;
+}
+
+.actions{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:14px;
+}
+
+button{
+padding:12px 16px;
+border-radius:12px;
+border:none;
+cursor:pointer;
+font-size:14px;
+}
+
+.primary{
+background:linear-gradient(135deg,#2563eb,#22c55e);
+color:white;
+}
+
+.secondary{
+background:#1f2937;
+color:white;
+}
+
+.result{
+margin-top:20px;
+white-space:pre-line;
+background:#020617;
+padding:16px;
+border-radius:14px;
+border:1px solid #1f2937;
+}
+
+.saved{
+background:#020617;
+padding:12px;
+margin-top:10px;
+border-radius:12px;
+border:1px solid #1f2937;
+}
+
+.footer{
+margin-top:30px;
+text-align:center;
+font-size:12px;
+color:#6b7280;
+}
+
+@media(max-width:900px){
+.grid{grid-template-columns:1fr;}
+.hero h1{font-size:28px;}
+}
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="brand">
-        <div class="brand-badge">MB</div>
-        <div class="brand-text">
-          <h1>MemoryBridge AI</h1>
-          <p>portable context for every AI</p>
-        </div>
-      </div>
-
-      <div class="header-right">
-        <div class="pill">Perfiles inteligentes</div>
-        <div class="pill">Compatible con varias IAs</div>
-      </div>
-    </div>
-
-    <div class="hero">
-      <div class="hero-badge">migra tu contexto sin empezar de cero</div>
-      <h2>
-        Lleva tu <span class="gradient">memoria</span><br>
-        a cualquier IA
-      </h2>
-      <p>
-        Sube tus chats, genera tu perfil y conviértelo en una identidad portable.
-        Más rápido, más claro y mucho más útil que volver a explicar quién eres cada vez.
-      </p>
-    </div>
-
-    <div class="main-grid">
-      <div class="card left-card">
-        <div class="mini-badge">Paso 1 · elige desde dónde vienes</div>
-        <h3 class="section-title">Importa desde tu IA actual</h3>
-        <p class="section-subtitle">
-          Escoge la plataforma desde la que quieres traer tus chats. Te mostramos los pasos según la opción elegida.
-        </p>
-
-        <div class="provider-grid">
-          <div class="provider-card active" onclick="seleccionarProveedor('chatgpt')" id="provider-chatgpt">
-            <div class="provider-top">
-              <div class="provider-icon">💬</div>
-            </div>
-            <h3>ChatGPT</h3>
-            <p>Exporta tu historial y tráelo acá para convertirlo en perfil.</p>
-          </div>
-
-          <div class="provider-card" onclick="seleccionarProveedor('claude')" id="provider-claude">
-            <div class="provider-top">
-              <div class="provider-icon">🧠</div>
-            </div>
-            <h3>Claude</h3>
-            <p>Importa conversaciones desde la configuración de privacidad.</p>
-          </div>
-
-          <div class="provider-card" onclick="seleccionarProveedor('gemini')" id="provider-gemini">
-            <div class="provider-top">
-              <div class="provider-icon">✨</div>
-            </div>
-            <h3>Gemini</h3>
-            <p>Descarga tus datos de Gemini y llévalos a MemoryBridge.</p>
-          </div>
-
-          <div class="provider-card" onclick="seleccionarProveedor('otro')" id="provider-otro">
-            <div class="provider-top">
-              <div class="provider-icon">📁</div>
-            </div>
-            <h3>Otro</h3>
-            <p>Pega texto o sube un archivo compatible manualmente.</p>
-          </div>
-        </div>
-
-        <div class="steps-box">
-          <h4 class="steps-title" id="stepsTitle">Pasos para traer tus chats desde ChatGPT</h4>
-          <ol class="steps-list" id="stepsList">
-            <li>Abre ChatGPT.</li>
-            <li>Ve a configuración o settings.</li>
-            <li>Entra a controles de datos.</li>
-            <li>Exporta tus datos o tu historial.</li>
-            <li>Cuando tengas el archivo o el texto, pégalo o súbelo acá.</li>
-          </ol>
-        </div>
-
-        <div class="mini-badge">Paso 2 · nombre de tu perfil</div>
-        <h3 class="section-title">Ponle nombre antes de guardarlo</h3>
-        <p class="section-subtitle">
-          Así puedes descargar varios perfiles con nombres distintos y se siente mucho más organizado.
-        </p>
-
-        <input id="nombrePerfilInput" class="small-input" type="text" placeholder="Ejemplo: Nicolas-business-profile" />
-
-        <div class="mini-badge">Paso 3 · trae tus conversaciones</div>
-        <h3 class="section-title">Pegar chats o subir archivo</h3>
-        <p class="section-subtitle">
-          Puedes hacerlo manualmente o por archivo. Entre más real y largo sea el contenido, mejor queda el perfil.
-        </p>
-
-        <div class="mode-switch">
-          <button onclick="mostrarModo('texto')" id="btnTexto" class="mode-btn active">Pegar chats</button>
-          <button onclick="mostrarModo('archivo')" id="btnArchivo" class="mode-btn">Subir archivo</button>
-        </div>
-
-        <div id="modoTexto">
-          <div class="textarea-wrap">
-            <textarea id="chatInput" class="input-box" placeholder="Pega aquí tus conversaciones..."></textarea>
-          </div>
-          <div class="char-counter" id="charCounter">0 caracteres</div>
-        </div>
-
-        <div id="modoArchivo" style="display:none;">
-          <div class="dropzone" id="dropzone">
-            <strong>Arrastra tu archivo acá</strong>
-            <p>o selecciónalo manualmente</p>
-            <label class="file-btn" for="fileInput">Elegir archivo</label>
-            <input class="file-input" type="file" id="fileInput" accept=".txt,.md,.json,.csv,.zip" />
-            <p>Formatos soportados: .txt, .md, .json, .csv, .zip</p>
-          </div>
-
-          <div class="preview-box" id="archivoPreview">
-            <p class="section-subtitle" style="margin-bottom:10px;">Vista previa del texto detectado:</p>
-            <textarea id="archivoTexto" class="input-box"></textarea>
-            <div class="char-counter" id="fileCharCounter">0 caracteres</div>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button id="botonCrear" class="btn-primary" onclick="crearPerfil()">Crear mi perfil</button>
-          <button class="btn-secondary" onclick="copiarPerfilCompleto()">Copiar perfil completo</button>
-          <button class="btn-secondary" onclick="copiarPromptFinal()">Copiar solo prompt</button>
-          <button class="btn-secondary" onclick="descargarPerfil()">Descargar perfil</button>
-        </div>
-
-        <div id="resultado" class="result-box">
-          <div class="result-placeholder">Tu perfil aparecerá acá.</div>
-        </div>
-      </div>
-
-      <div class="card right-card">
-        <div class="mini-badge">Por qué esto importa</div>
-        <h3 class="section-title">Haz que se sienta como tuya</h3>
-        <p class="section-subtitle">
-          MemoryBridge transforma conversaciones desordenadas en una identidad útil para otras IAs.
-        </p>
-
-        <div class="quick-stats">
-          <div class="stat">
-            <h4>No empieces de cero</h4>
-            <p>Conserva tu tono, tus gustos y la forma en que prefieres que te respondan.</p>
-          </div>
-          <div class="stat">
-            <h4>Ahorra tiempo</h4>
-            <p>Evita repetir el mismo contexto una y otra vez cuando cambias de herramienta.</p>
-          </div>
-        </div>
-
-        <div class="feature-grid">
-          <div class="feature-card">
-            <h4>Perfil portable</h4>
-            <p>Llévate tu identidad a otras IAs en formato listo para copiar.</p>
-          </div>
-          <div class="feature-card">
-            <h4>Resultado limpio</h4>
-            <p>Tu información se resume de forma útil, clara y accionable.</p>
-          </div>
-          <div class="feature-card">
-            <h4>Input flexible</h4>
-            <p>Pega chats, sube archivos o usa ZIP exportados directamente.</p>
-          </div>
-          <div class="feature-card">
-            <h4>Más producto</h4>
-            <p>Se siente como una herramienta seria y no como una simple demo.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer">
-      Built with <span>MemoryBridge AI</span> · portable identity for modern chatbots
-    </div>
-  </div>
-
-  <script>
-    let proveedorActual = "chatgpt";
-    let ultimoPromptFinal = "";
-    let ultimoPerfilCompleto = "";
-
-    const providerSteps = {
-      chatgpt: {
-        titulo: "Pasos para traer tus chats desde ChatGPT",
-        pasos: [
-          "Abre ChatGPT.",
-          "Ve a configuración o settings.",
-          "Entra a controles de datos.",
-          "Exporta tus datos o tu historial.",
-          "Cuando tengas el archivo o el texto, pégalo o súbelo acá."
-        ]
-      },
-      claude: {
-        titulo: "Pasos para traer tus chats desde Claude",
-        pasos: [
-          "Abre Claude en web o escritorio.",
-          "Ve a settings.",
-          "Entra a privacy.",
-          "Busca la opción para exportar tus datos.",
-          "Trae el texto o el archivo acá para crear tu perfil."
-        ]
-      },
-      gemini: {
-        titulo: "Pasos para traer tus chats desde Gemini",
-        pasos: [
-          "Abre Gemini o la configuración de tu cuenta Google.",
-          "Busca la opción para descargar tus datos de Gemini.",
-          "Descarga el contenido disponible.",
-          "Abre el archivo exportado.",
-          "Pega el texto o súbelo en un formato compatible."
-        ]
-      },
-      otro: {
-        titulo: "Traer tus chats desde otra herramienta",
-        pasos: [
-          "Busca si esa herramienta permite exportar conversaciones.",
-          "Si te da un archivo de texto, súbelo.",
-          "Si no, copia y pega las conversaciones manualmente.",
-          "Asegúrate de que el contenido tenga suficiente texto.",
-          "Genera tu perfil desde acá."
-        ]
-      }
-    };
-
-    function seleccionarProveedor(proveedor) {
-      proveedorActual = proveedor;
-
-      document.querySelectorAll(".provider-card").forEach(card => {
-        card.classList.remove("active");
-      });
-
-      const activeCard = document.getElementById("provider-" + proveedor);
-      if (activeCard) activeCard.classList.add("active");
-
-      const info = providerSteps[proveedor];
-      document.getElementById("stepsTitle").innerText = info.titulo;
-
-      const stepsList = document.getElementById("stepsList");
-      stepsList.innerHTML = "";
-      info.pasos.forEach(paso => {
-        const li = document.createElement("li");
-        li.textContent = paso;
-        stepsList.appendChild(li);
-      });
-    }
-
-    function mostrarModo(modo) {
-      const modoTexto = document.getElementById("modoTexto");
-      const modoArchivo = document.getElementById("modoArchivo");
-      const btnTexto = document.getElementById("btnTexto");
-      const btnArchivo = document.getElementById("btnArchivo");
-
-      if (modo === "texto") {
-        modoTexto.style.display = "block";
-        modoArchivo.style.display = "none";
-        btnTexto.classList.add("active");
-        btnArchivo.classList.remove("active");
-      } else {
-        modoTexto.style.display = "none";
-        modoArchivo.style.display = "block";
-        btnArchivo.classList.add("active");
-        btnTexto.classList.remove("active");
-      }
-    }
-
-    function actualizarContadorTexto() {
-      const texto = document.getElementById("chatInput").value;
-      document.getElementById("charCounter").innerText = `${texto.length} caracteres`;
-    }
-
-    function actualizarContadorArchivo() {
-      const texto = document.getElementById("archivoTexto").value;
-      document.getElementById("fileCharCounter").innerText = `${texto.length} caracteres`;
-    }
-
-    async function leerArchivo(file) {
-      if (!file) return;
-
-      const nombre = file.name.toLowerCase();
-
-      if (nombre.endsWith(".zip")) {
-        await leerZip(file);
-        return;
-      }
-
-      const reader = new FileReader();
-
-      reader.onload = function(e) {
-        const contenido = e.target.result;
-        document.getElementById("archivoPreview").style.display = "block";
-        document.getElementById("archivoTexto").value = contenido;
-        actualizarContadorArchivo();
-      };
-
-      reader.readAsText(file);
-    }
-
-    async function leerZip(file) {
-      try {
-        const zip = await JSZip.loadAsync(file);
-        let textoFinal = "";
-
-        const archivos = Object.keys(zip.files);
-
-        for (const nombre of archivos) {
-          const archivo = zip.files[nombre];
-
-          if (
-            !archivo.dir &&
-            (
-              nombre.endsWith(".txt") ||
-              nombre.endsWith(".md") ||
-              nombre.endsWith(".json") ||
-              nombre.endsWith(".csv") ||
-              nombre.endsWith(".html")
-            )
-          ) {
-            const contenido = await archivo.async("string");
-            textoFinal += `\n\n===== ${nombre} =====\n\n${contenido}`;
-          }
-        }
-
-        if (!textoFinal.trim()) {
-          alert("No encontré archivos de texto útiles dentro del ZIP.");
-          return;
-        }
-
-        document.getElementById("archivoPreview").style.display = "block";
-        document.getElementById("archivoTexto").value = textoFinal.trim();
-        actualizarContadorArchivo();
-      } catch (error) {
-        alert("No pude abrir ese ZIP. Prueba con otro archivo.");
-      }
-    }
-
-    function escaparHTML(texto) {
-      return texto
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function extraerSeccion(texto, inicio, siguientes) {
-      const startIndex = texto.indexOf(inicio);
-      if (startIndex === -1) return "";
-
-      const desde = startIndex + inicio.length;
-      let hasta = texto.length;
-
-      for (const siguiente of siguientes) {
-        const idx = texto.indexOf(siguiente, desde);
-        if (idx !== -1 && idx < hasta) {
-          hasta = idx;
-        }
-      }
-
-      return texto.slice(desde, hasta).trim();
-    }
-
-    function convertirLista(texto) {
-      const items = texto
-        .split("\n")
-        .map(x => x.trim())
-        .filter(x => x)
-        .map(x => x.replace(/^[-•]\s*/, "").trim())
-        .filter(x => x);
-
-      if (!items.length) {
-        return `<p>${escaparHTML(texto)}</p>`;
-      }
-
-      return `<ul class="bullet-list">${items.map(item => `<li>${escaparHTML(item)}</li>`).join("")}</ul>`;
-    }
-
-    function renderizarResultado(texto) {
-      ultimoPerfilCompleto = texto;
-
-      const nombre = extraerSeccion(texto, "🧠 Nombre del perfil:", [
-        "🎯 Personalidad:",
-        "💬 Tono de comunicación:",
-        "✍️ Estilo de escritura:",
-        "🔥 Intereses principales:",
-        "🧩 Contexto importante:",
-        "🤖 Cómo debería responderle una IA:",
-        "⚡ Prompt listo para copiar:"
-      ]);
-
-      const personalidad = extraerSeccion(texto, "🎯 Personalidad:", [
-        "💬 Tono de comunicación:",
-        "✍️ Estilo de escritura:",
-        "🔥 Intereses principales:",
-        "🧩 Contexto importante:",
-        "🤖 Cómo debería responderle una IA:",
-        "⚡ Prompt listo para copiar:"
-      ]);
-
-      const tono = extraerSeccion(texto, "💬 Tono de comunicación:", [
-        "✍️ Estilo de escritura:",
-        "🔥 Intereses principales:",
-        "🧩 Contexto importante:",
-        "🤖 Cómo debería responderle una IA:",
-        "⚡ Prompt listo para copiar:"
-      ]);
-
-      const estilo = extraerSeccion(texto, "✍️ Estilo de escritura:", [
-        "🔥 Intereses principales:",
-        "🧩 Contexto importante:",
-        "🤖 Cómo debería responderle una IA:",
-        "⚡ Prompt listo para copiar:"
-      ]);
-
-      const intereses = extraerSeccion(texto, "🔥 Intereses principales:", [
-        "🧩 Contexto importante:",
-        "🤖 Cómo debería responderle una IA:",
-        "⚡ Prompt listo para copiar:"
-      ]);
-
-      const contexto = extraerSeccion(texto, "🧩 Contexto importante:", [
-        "🤖 Cómo debería responderle una IA:",
-        "⚡ Prompt listo para copiar:"
-      ]);
-
-      const responder = extraerSeccion(texto, "🤖 Cómo debería responderle una IA:", [
-        "⚡ Prompt listo para copiar:"
-      ]);
-
-      const prompt = extraerSeccion(texto, "⚡ Prompt listo para copiar:", []);
-
-      ultimoPromptFinal = prompt || "";
-
-      const resultado = document.getElementById("resultado");
-
-      const tieneFormato = nombre || personalidad || tono || estilo || intereses || contexto || responder || prompt;
-
-      if (!tieneFormato) {
-        resultado.innerHTML = `<div class="prompt-box"><div class="prompt-text">${escaparHTML(texto)}</div></div>`;
-        return;
-      }
-
-      resultado.innerHTML = `
-        <div class="result-grid">
-          <div class="profile-hero">
-            <div class="profile-chip">Perfil generado</div>
-            <h3 class="result-main-title">${escaparHTML(nombre || "Perfil detectado")}</h3>
-            <p class="result-subtitle">Este es el resumen portable de tu identidad para usarla en otras IAs.</p>
-          </div>
-
-          <div class="result-cards">
-            <div class="result-card">
-              <h4>🎯 Personalidad</h4>
-              <div>${escaparHTML(personalidad || "No detectado")}</div>
-            </div>
-
-            <div class="result-card">
-              <h4>💬 Tono de comunicación</h4>
-              <div>${escaparHTML(tono || "No detectado")}</div>
-            </div>
-
-            <div class="result-card">
-              <h4>✍️ Estilo de escritura</h4>
-              <div>${escaparHTML(estilo || "No detectado")}</div>
-            </div>
-
-            <div class="result-card">
-              <h4>🤖 Cómo debería responderle una IA</h4>
-              <div>${escaparHTML(responder || "No detectado")}</div>
-            </div>
-
-            <div class="result-card">
-              <h4>🔥 Intereses principales</h4>
-              ${convertirLista(intereses || "No detectado")}
-            </div>
-
-            <div class="result-card">
-              <h4>🧩 Contexto importante</h4>
-              ${convertirLista(contexto || "No detectado")}
-            </div>
-          </div>
-
-          <div class="prompt-box">
-            <h4>⚡ Prompt listo para copiar</h4>
-            <div class="prompt-text">${escaparHTML(prompt || "No detectado")}</div>
-          </div>
-        </div>
-      `;
-    }
-
-    async function crearPerfil() {
-      const resultado = document.getElementById("resultado");
-      const boton = document.getElementById("botonCrear");
-
-      const textoManual = document.getElementById("chatInput").value.trim();
-      const archivoTextoEl = document.getElementById("archivoTexto");
-      const textoArchivo = archivoTextoEl ? archivoTextoEl.value.trim() : "";
-      const texto = textoManual || textoArchivo;
-
-      if (texto.length < 50) {
-        alert("Pega más texto o sube un archivo con suficiente contenido 😅");
-        return;
-      }
-
-      resultado.innerHTML = `<div class="result-placeholder">Analizando con IA...</div>`;
-      boton.disabled = true;
-      boton.innerText = "Procesando...";
-      ultimoPromptFinal = "";
-      ultimoPerfilCompleto = "";
-
-      try {
-        const respuesta = await fetch("/api/generar", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ texto, proveedor: proveedorActual })
-        });
-
-        const data = await respuesta.json();
-
-        if (data.resultado) {
-          renderizarResultado(data.resultado);
-        } else if (data.error) {
-          resultado.innerHTML = `<div class="prompt-box"><div class="prompt-text">Error: ${escaparHTML(data.error)}</div></div>`;
-        } else {
-          resultado.innerHTML = `<div class="prompt-box"><div class="prompt-text">Hubo un error generando el perfil.</div></div>`;
-        }
-      } catch (error) {
-        resultado.innerHTML = `<div class="prompt-box"><div class="prompt-text">Error conectando con la IA.</div></div>`;
-      }
-
-      boton.disabled = false;
-      boton.innerText = "Crear mi perfil";
-    }
-
-    function copiarPerfilCompleto() {
-      if (!ultimoPerfilCompleto.trim()) {
-        alert("Todavía no hay perfil para copiar.");
-        return;
-      }
-
-      navigator.clipboard.writeText(ultimoPerfilCompleto);
-      alert("Perfil completo copiado 🚀");
-    }
-
-    function copiarPromptFinal() {
-      if (!ultimoPromptFinal.trim()) {
-        alert("Todavía no hay prompt final para copiar.");
-        return;
-      }
-
-      navigator.clipboard.writeText(ultimoPromptFinal);
-      alert("Prompt final copiado ⚡");
-    }
-
-    function limpiarNombreArchivo(nombre) {
-      return nombre
-        .trim()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-zA-Z0-9-_]/g, "")
-        .toLowerCase();
-    }
-
-    function descargarPerfil() {
-      if (!ultimoPerfilCompleto.trim()) {
-        alert("Todavía no hay perfil para descargar.");
-        return;
-      }
-
-      const inputNombre = document.getElementById("nombrePerfilInput").value;
-      const nombreLimpio = limpiarNombreArchivo(inputNombre) || "memorybridge-profile";
-
-      const blob = new Blob([ultimoPerfilCompleto], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-
-      const enlace = document.createElement("a");
-      enlace.href = url;
-      enlace.download = `${nombreLimpio}.txt`;
-      document.body.appendChild(enlace);
-      enlace.click();
-      document.body.removeChild(enlace);
-
-      URL.revokeObjectURL(url);
-    }
-
-    document.getElementById("chatInput").addEventListener("input", actualizarContadorTexto);
-
-    const fileInput = document.getElementById("fileInput");
-    fileInput.addEventListener("change", function(e) {
-      const file = e.target.files[0];
-      leerArchivo(file);
-    });
-
-    const dropzone = document.getElementById("dropzone");
-    const archivoTexto = document.getElementById("archivoTexto");
-
-    archivoTexto.addEventListener("input", actualizarContadorArchivo);
-
-    ["dragenter", "dragover"].forEach(eventName => {
-      dropzone.addEventListener(eventName, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropzone.classList.add("dragover");
-      });
-    });
-
-    ["dragleave", "drop"].forEach(eventName => {
-      dropzone.addEventListener(eventName, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropzone.classList.remove("dragover");
-      });
-    });
-
-    dropzone.addEventListener("drop", (e) => {
-      const files = e.dataTransfer.files;
-      if (files && files[0]) {
-        fileInput.files = files;
-        leerArchivo(files[0]);
-      }
-    });
-
-    actualizarContadorTexto();
-  </script>
+
+<div class="container">
+
+<div class="header">
+<div class="logo">MemoryBridge AI</div>
+<div class="badge" id="count">0 perfiles</div>
+</div>
+
+<div class="hero">
+<h1>Tu memoria para cualquier IA</h1>
+<p>Sube tus chats y crea un perfil portable en segundos</p>
+</div>
+
+<div class="grid">
+
+<div class="card">
+
+<h3 class="section-title">1. Selecciona IA</h3>
+
+<div class="providers">
+<div class="provider active" onclick="selectProvider('chatgpt',this)">ChatGPT</div>
+<div class="provider" onclick="selectProvider('claude',this)">Claude</div>
+<div class="provider" onclick="selectProvider('gemini',this)">Gemini</div>
+<div class="provider" onclick="selectProvider('otro',this)">Otro</div>
+</div>
+
+<div class="steps" id="steps"></div>
+
+<h3 class="section-title">2. Nombre del perfil</h3>
+<input id="name" placeholder="ej: nicolas-business">
+
+<h3 class="section-title">3. Pega o sube chats</h3>
+<textarea id="input"></textarea>
+<div class="counter" id="chars">0 caracteres</div>
+
+<div class="drop" id="drop">
+Arrastra archivo o selecciónalo
+<input type="file" id="file">
+</div>
+
+<div class="actions">
+<button class="primary" onclick="crear()">Crear perfil</button>
+<button class="secondary" onclick="copiar()">Copiar</button>
+<button class="secondary" onclick="copiarPrompt()">Prompt</button>
+<button class="secondary" onclick="descargar()">Descargar</button>
+<button class="secondary" onclick="descargarPrompt()">Descargar Prompt</button>
+</div>
+
+<div id="result" class="result">Tu perfil aparecerá aquí</div>
+
+</div>
+
+<div class="card">
+
+<h3>Historial</h3>
+<button class="secondary" onclick="clearAll()">Borrar todo</button>
+
+<div id="history"></div>
+
+</div>
+
+</div>
+
+<div class="footer">MemoryBridge AI · MVP</div>
+
+</div>
+
+<script>
+
+let provider="chatgpt"
+let last=""
+let lastPrompt=""
+const KEY="mb_profiles"
+
+const stepsData={
+chatgpt:["Ir a settings","Data controls","Export data","Subir aquí"],
+claude:["Settings","Privacy","Export","Subir aquí"],
+gemini:["Google data","Download","Abrir","Subir"],
+otro:["Copiar texto","Pegar","Listo"]
+}
+
+function selectProvider(p,el){
+provider=p
+document.querySelectorAll(".provider").forEach(x=>x.classList.remove("active"))
+el.classList.add("active")
+
+let html=""
+stepsData[p].forEach(s=>html+="• "+s+"<br>")
+document.getElementById("steps").innerHTML=html
+}
+
+selectProvider("chatgpt",document.querySelector(".provider"))
+
+function getName(){
+return document.getElementById("name").value||"perfil"
+}
+
+function save(){
+let arr=JSON.parse(localStorage.getItem(KEY)||"[]")
+
+arr.unshift({
+id:Date.now(),
+nombre:getName(),
+contenido:last,
+prompt:lastPrompt
+})
+
+localStorage.setItem(KEY,JSON.stringify(arr.slice(0,10)))
+render()
+}
+
+function render(){
+let arr=JSON.parse(localStorage.getItem(KEY)||"[]")
+let html=""
+
+arr.forEach(p=>{
+html+=`
+<div class="saved">
+<b>${p.nombre}</b><br>
+<button onclick="load(${p.id})">Abrir</button>
+<button onclick="copyItem(${p.id})">Copiar</button>
+<button onclick="downloadItem(${p.id})">Descargar</button>
+<button onclick="downloadPromptItem(${p.id})">Prompt</button>
+<button onclick="remove(${p.id})">Borrar</button>
+</div>
+`
+})
+
+document.getElementById("history").innerHTML=html||"vacío"
+document.getElementById("count").innerText=arr.length+" perfiles"
+}
+
+function load(id){
+let arr=JSON.parse(localStorage.getItem(KEY)||"[]")
+let p=arr.find(x=>x.id==id)
+last=p.contenido
+lastPrompt=p.prompt
+document.getElementById("result").innerText=p.contenido
+}
+
+function copyItem(id){
+let arr=JSON.parse(localStorage.getItem(KEY)||"[]")
+navigator.clipboard.writeText(arr.find(x=>x.id==id).contenido)
+}
+
+function downloadItem(id){
+let arr=JSON.parse(localStorage.getItem(KEY)||"[]")
+let p=arr.find(x=>x.id==id)
+file(p.nombre+".txt",p.contenido)
+}
+
+function downloadPromptItem(id){
+let arr=JSON.parse(localStorage.getItem(KEY)||"[]")
+let p=arr.find(x=>x.id==id)
+file(p.nombre+"-prompt.txt",p.prompt)
+}
+
+function remove(id){
+let arr=JSON.parse(localStorage.getItem(KEY)||"[]")
+arr=arr.filter(x=>x.id!=id)
+localStorage.setItem(KEY,JSON.stringify(arr))
+render()
+}
+
+function clearAll(){
+localStorage.removeItem(KEY)
+render()
+}
+
+function file(name,text){
+let blob=new Blob([text])
+let a=document.createElement("a")
+a.href=URL.createObjectURL(blob)
+a.download=name
+a.click()
+}
+
+function copiar(){
+navigator.clipboard.writeText(last)
+}
+
+function copiarPrompt(){
+navigator.clipboard.writeText(lastPrompt)
+}
+
+function descargar(){
+file(getName()+".txt",last)
+}
+
+function descargarPrompt(){
+file(getName()+"-prompt.txt",lastPrompt)
+}
+
+async function crear(){
+
+let t=document.getElementById("input").value
+let f=document.getElementById("file").files[0]
+
+if(f){
+t=await f.text()
+}
+
+if(t.length<20){
+alert("mete más texto")
+return
+}
+
+document.getElementById("result").innerText="procesando..."
+
+let r=await fetch("/api/generar",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({texto:t,proveedor:provider})
+})
+
+let d=await r.json()
+
+last=d.resultado||"error"
+lastPrompt=d.resultado||""
+
+document.getElementById("result").innerText=last
+
+save()
+}
+
+document.getElementById("input").addEventListener("input",()=>{
+document.getElementById("chars").innerText=document.getElementById("input").value.length+" caracteres"
+})
+
+render()
+
+</script>
+
 </body>
 </html>
