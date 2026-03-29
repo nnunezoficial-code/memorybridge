@@ -4,19 +4,41 @@
   <meta charset="UTF-8">
   <title>MemoryBridge</title>
 </head>
-<body style="font-family: Arial; text-align: center; padding: 50px;">
+<body style="font-family: Arial, sans-serif; background: #f7f7f7; margin: 0; padding: 0;">
+  <div style="max-width: 900px; margin: 40px auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center;">
 
-  <h1>Llévate tu contexto a cualquier IA</h1>
-  <p>Sube tus chats y crea tu perfil inteligente en segundos</p>
+    <h1 style="font-size: 42px; margin-bottom: 10px;">Llévate tu contexto a cualquier IA</h1>
+    <p style="font-size: 18px; color: #555; margin-bottom: 30px;">
+      Sube tus chats y crea tu perfil inteligente en segundos
+    </p>
 
-  <textarea id="chatInput" placeholder="Pega aquí tus chats..." style="width: 80%; height: 200px;"></textarea>
-  <br><br>
+    <textarea id="chatInput" placeholder="Pega aquí tus chats..." style="width: 100%; height: 220px; padding: 15px; font-size: 16px; border-radius: 12px; border: 1px solid #ccc; resize: vertical;"></textarea>
 
-  <button onclick="crearPerfil()" style="padding: 10px 20px;">
-    Crear mi perfil
-  </button>
+    <br><br>
 
-  <h2 id="resultado" style="margin-top: 30px;"></h2>
+    <button onclick="crearPerfil()" style="background: black; color: white; border: none; padding: 14px 28px; font-size: 16px; border-radius: 12px; cursor: pointer;">
+      Crear mi perfil
+    </button>
+
+    <div id="resultado" style="margin-top: 40px; text-align: left; white-space: pre-line; font-size: 18px; line-height: 1.6;"></div>
+
+    <div style="margin-top: 50px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+      <div style="background: #fafafa; padding: 20px; border-radius: 16px; width: 220px;">
+        <h3>No empieces de cero</h3>
+        <p style="color: #666;">Conserva tu estilo, tus gustos y tu contexto.</p>
+      </div>
+
+      <div style="background: #fafafa; padding: 20px; border-radius: 16px; width: 220px;">
+        <h3>Usa cualquier IA</h3>
+        <p style="color: #666;">Genera un perfil portable para otras plataformas.</p>
+      </div>
+
+      <div style="background: #fafafa; padding: 20px; border-radius: 16px; width: 220px;">
+        <h3>Ahorra tiempo</h3>
+        <p style="color: #666;">Evita repetir tu contexto una y otra vez.</p>
+      </div>
+    </div>
+  </div>
 
   <script>
     function crearPerfil() {
@@ -29,13 +51,11 @@
 
       document.getElementById("resultado").innerText =
         "Perfil detectado:\n\n" +
-        "- Idioma: Español\n" +
-        "- Tono: Casual\n" +
-        "- Estilo: Directo\n" +
-        "- Intereses: (detectando...)\n\n" +
+        "• Idioma: Español\n" +
+        "• Tono: Casual\n" +
+        "• Estilo: Directo\n" +
+        "• Intereses: (detectando...)\n\n" +
         "⚠️ Esto es una demo. Próximamente análisis real con IA 🚀";
     }
   </script>
-
 </body>
-</html>
