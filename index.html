@@ -749,7 +749,8 @@
 
         <div class="actions">
           <button id="botonCrear" class="btn-primary" onclick="crearPerfil()">Crear mi perfil</button>
-          <button class="btn-secondary" onclick="copiarPerfil()">Copiar perfil</button>
+          <button class="btn-secondary" onclick="copiarPerfilCompleto()">Copiar perfil completo</button>
+          <button class="btn-secondary" onclick="copiarPromptFinal()">Copiar solo prompt</button>
         </div>
 
         <div id="resultado" class="result-box">
@@ -803,6 +804,8 @@
 
   <script>
     let proveedorActual = "chatgpt";
+    let ultimoPromptFinal = "";
+    let ultimoPerfilCompleto = "";
 
     const providerSteps = {
       chatgpt: {
@@ -955,6 +958,8 @@
     }
 
     function renderizarResultado(texto) {
+      ultimoPerfilCompleto = texto;
+
       const nombre = extraerSeccion(texto, "🧠 Nombre del perfil:", [
         "🎯 Personalidad:",
         "💬 Tono de comunicación:",
@@ -1005,6 +1010,8 @@
       ]);
 
       const prompt = extraerSeccion(texto, "⚡ Prompt listo para copiar:", []);
+
+      ultimoPromptFinal = prompt || "";
 
       const resultado = document.getElementById("resultado");
 
@@ -1080,6 +1087,8 @@
       resultado.innerHTML = `<div class="result-placeholder">Analizando con IA...</div>`;
       boton.disabled = true;
       boton.innerText = "Procesando...";
+      ultimoPromptFinal = "";
+      ultimoPerfilCompleto = "";
 
       try {
         const respuesta = await fetch("/api/generar", {
@@ -1107,17 +1116,24 @@
       boton.innerText = "Crear mi perfil";
     }
 
-    function copiarPerfil() {
-      const resultado = document.getElementById("resultado");
-      const texto = resultado.innerText;
-
-      if (!texto || texto.trim() === "" || texto.includes("Tu perfil aparecerá acá.")) {
+    function copiarPerfilCompleto() {
+      if (!ultimoPerfilCompleto.trim()) {
         alert("Todavía no hay perfil para copiar.");
         return;
       }
 
-      navigator.clipboard.writeText(texto);
-      alert("Perfil copiado 🚀");
+      navigator.clipboard.writeText(ultimoPerfilCompleto);
+      alert("Perfil completo copiado 🚀");
+    }
+
+    function copiarPromptFinal() {
+      if (!ultimoPromptFinal.trim()) {
+        alert("Todavía no hay prompt final para copiar.");
+        return;
+      }
+
+      navigator.clipboard.writeText(ultimoPromptFinal);
+      alert("Prompt final copiado ⚡");
     }
 
     document.getElementById("chatInput").addEventListener("input", actualizarContadorTexto);
@@ -1132,36 +1148,6 @@
     const archivoTexto = document.getElementById("archivoTexto");
 
     archivoTexto.addEventListener("input", actualizarContadorArchivo);
-
-    ["dragenter", "dragover"].forEach(eventName => {
-      dropzone.addEventListener(eventName, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropzone.classList.add("dragover");
-      });
-    });
-
-    ["dragleave", "drop"].forEach(eventName => {
-      dropzone.addEventListener(eventName, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropzone.classList.remove("dragover");
-      });
-    });
-
-    dropzone.addEventListener("drop", (e) => {
-      const files = e.dataTransfer.files;
-      if (files && files[0]) {
-        fileInput.files = files;
-        leerArchivo(files[0]);
-      }
-    });
-
-    actualizarContadorTexto();
-  </script>
-</body>
-</html>
-    const dropzone = document.getElementById("dropzone");
 
     ["dragenter", "dragover"].forEach(eventName => {
       dropzone.addEventListener(eventName, (e) => {
