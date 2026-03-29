@@ -1,82 +1,515 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MemoryBridge AI</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: #0b0f19;
+      color: #f5f7fb;
+    }
+
+    .page {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(86, 137, 255, 0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(120, 255, 214, 0.12), transparent 25%),
+        linear-gradient(180deg, #0b0f19 0%, #111827 100%);
+      padding: 40px 20px 60px;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 26px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #dbe7ff;
+      font-size: 14px;
+      letter-spacing: 0.2px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 54px;
+      line-height: 1.05;
+      font-weight: 800;
+      letter-spacing: -1.6px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #ffffff, #8ab4ff 55%, #7ef7d0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 18px auto 0;
+      color: #a8b3c7;
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: start;
+      margin-top: 34px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, 0.82);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.28);
+      backdrop-filter: blur(14px);
+    }
+
+    .main-card {
+      padding: 28px;
+    }
+
+    .sidebar-card {
+      padding: 22px;
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #eef4ff;
+    }
+
+    .section-subtitle {
+      margin: 0 0 18px;
+      color: #9aa7bd;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .toggle-btn {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: #dbe7ff;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .toggle-btn:hover {
+      background: rgba(255,255,255,0.09);
+    }
+
+    .toggle-btn.active {
+      background: linear-gradient(135deg, #3b82f6, #22c55e);
+      color: white;
+      border: none;
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.28);
+    }
+
+    .input-box {
+      width: 100%;
+      min-height: 240px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: #f5f7fb;
+      padding: 18px;
+      font-size: 15px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+    }
+
+    .input-box::placeholder {
+      color: #7f8aa0;
+    }
+
+    .upload-box {
+      border: 1.5px dashed rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.03);
+      border-radius: 18px;
+      padding: 28px;
+      text-align: center;
+    }
+
+    .upload-box p {
+      color: #9aa7bd;
+      font-size: 14px;
+      margin: 10px 0 0;
+      line-height: 1.6;
+    }
+
+    input[type="file"] {
+      color: #dbe7ff;
+      font-size: 14px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, #3b82f6, #22c55e);
+      color: white;
+      box-shadow: 0 10px 24px rgba(59, 130, 246, 0.25);
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(59, 130, 246, 0.3);
+    }
+
+    .secondary-btn {
+      background: rgba(255,255,255,0.05);
+      color: #eaf1ff;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .secondary-btn:hover {
+      background: rgba(255,255,255,0.09);
+    }
+
+    .result-box {
+      margin-top: 24px;
+      padding: 22px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      min-height: 140px;
+      color: #edf3ff;
+      white-space: pre-line;
+      line-height: 1.72;
+      font-size: 15px;
+    }
+
+    .mini-label {
+      display: inline-block;
+      font-size: 12px;
+      color: #8ba1c7;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 7px 12px;
+      margin-bottom: 12px;
+    }
+
+    .steps {
+      display: grid;
+      gap: 16px;
+    }
+
+    .step-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .step-card h3 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      color: #eef4ff;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: #9aa7bd;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-top: 26px;
+    }
+
+    .feature {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .feature h4 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #eef4ff;
+    }
+
+    .feature p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.65;
+      color: #9aa7bd;
+    }
+
+    #archivoPreview {
+      margin-top: 18px;
+    }
+
+    .small-note {
+      margin-top: 12px;
+      color: #7f8aa0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .features {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero h1 {
+        font-size: 42px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .main-card,
+      .sidebar-card {
+        padding: 20px;
+      }
+
+      .action-row {
+        flex-direction: column;
+      }
+
+      .primary-btn,
+      .secondary-btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 
-<body style="font-family: Arial, sans-serif; background: #f7f7f7; margin: 0; padding: 0;">
-
-  <div style="max-width: 900px; margin: 40px auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center;">
-
-    <!-- Logo -->
-    <div style="display:inline-block; background:#111; color:white; padding:8px 16px; border-radius:999px; font-size:14px; margin-bottom:20px;">
-      MemoryBridge AI
-    </div>
-
-    <!-- Título -->
-    <h1 style="font-size: 42px; margin-bottom: 10px;">
-      Llévate tu contexto a cualquier IA
-    </h1>
-
-    <!-- Subtítulo -->
-    <p style="font-size: 18px; color: #555; margin-bottom: 30px;">
-      Sube tus chats y crea tu perfil inteligente en segundos
-    </p>
-
-    <!-- Input -->
-    <textarea id="chatInput" placeholder="Pega aquí tus chats..."
-      style="width: 100%; height: 220px; padding: 15px; font-size: 16px; border-radius: 12px; border: 1px solid #ccc; resize: vertical;"></textarea>
-
-    <br><br>
-
-    <!-- Botón -->
-    <button id="botonCrear" onclick="crearPerfil()"
-      style="background: black; color: white; border: none; padding: 14px 28px; font-size: 16px; border-radius: 12px; cursor: pointer;">
-      Crear mi perfil
-    </button>
-
-    <!-- Resultado -->
-    <div id="resultado"
-      style="margin-top: 40px; text-align: left; white-space: pre-line; font-size: 18px; line-height: 1.6;">
-    </div>
-
-    <!-- BOTÓN COPIAR -->
-    <button onclick="copiarPerfil()" 
-      style="margin-top:20px; padding:12px 24px; border:none; border-radius:12px; background:black; color:white; cursor:pointer;">
-      Copiar perfil
-    </button>
-
-    <!-- Beneficios -->
-    <div style="margin-top: 50px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-
-      <div style="background: #fafafa; padding: 20px; border-radius: 16px; width: 220px;">
-        <h3>No empieces de cero</h3>
-        <p style="color: #666;">Conserva tu estilo, tus gustos y tu contexto.</p>
+<body>
+  <div class="page">
+    <div class="container">
+      <div class="hero">
+        <div class="badge">MemoryBridge AI</div>
+        <h1>
+          Llévate tu <span class="gradient-text">contexto</span><br>
+          a cualquier IA
+        </h1>
+        <p>
+          Convierte tus chats en un perfil inteligente, portable y listo para usar.
+          No empieces de cero cada vez que pruebas una nueva inteligencia artificial.
+        </p>
       </div>
 
-      <div style="background: #fafafa; padding: 20px; border-radius: 16px; width: 220px;">
-        <h3>Usa cualquier IA</h3>
-        <p style="color: #666;">Genera un perfil portable para otras plataformas.</p>
+      <div class="grid">
+        <div class="card main-card">
+          <div class="mini-label">Crea tu perfil</div>
+          <h2 class="section-title">Sube tus chats o pégalos acá</h2>
+          <p class="section-subtitle">
+            Elige la forma más fácil para ti. Puedes pegar conversaciones directamente
+            o subir archivos de texto para analizarlos con IA.
+          </p>
+
+          <div class="toggle-row">
+            <button onclick="mostrarModo('texto')" id="btnTexto" class="toggle-btn active">Pegar chats</button>
+            <button onclick="mostrarModo('archivo')" id="btnArchivo" class="toggle-btn">Subir archivo</button>
+          </div>
+
+          <div id="modoTexto">
+            <textarea id="chatInput" class="input-box" placeholder="Pega aquí tus conversaciones..."></textarea>
+          </div>
+
+          <div id="modoArchivo" style="display:none;">
+            <div class="upload-box">
+              <input type="file" id="fileInput" accept=".txt,.md,.json,.csv" onchange="leerArchivo()" />
+              <p>Sube un archivo de texto con tus chats para analizarlo.</p>
+              <p>Formatos permitidos por ahora: .txt, .md, .json, .csv</p>
+            </div>
+
+            <div id="archivoPreview" style="display:none;">
+              <p class="section-subtitle" style="margin-top:18px; margin-bottom:10px;">Texto detectado del archivo:</p>
+              <textarea id="archivoTexto" class="input-box"></textarea>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button id="botonCrear" class="primary-btn" onclick="crearPerfil()">Crear mi perfil</button>
+            <button class="secondary-btn" onclick="copiarPerfil()">Copiar perfil</button>
+          </div>
+
+          <div id="resultado" class="result-box">Tu perfil aparecerá acá.</div>
+          <div class="small-note">
+            Consejo: entre más largo y real sea el chat, mejor sale el perfil.
+          </div>
+        </div>
+
+        <div class="card sidebar-card">
+          <div class="mini-label">Importar desde otras IAs</div>
+          <h2 class="section-title">Cómo traer tus conversaciones</h2>
+          <p class="section-subtitle">
+            Estas son las formas más fáciles para mover tu historial a MemoryBridge.
+          </p>
+
+          <div class="steps">
+            <div class="step-card">
+              <h3>ChatGPT</h3>
+              <p>
+                Entra a configuración, busca controles de datos y exporta tu información.
+                Luego usa el archivo o copia el texto importante acá.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <h3>Claude</h3>
+              <p>
+                Abre configuración y privacidad, exporta tus datos y trae el contenido
+                relevante a esta página.
+              </p>
+            </div>
+
+            <div class="step-card">
+              <h3>Gemini</h3>
+              <p>
+                Descarga tus datos de Gemini, abre el contenido y pégalo o súbelo
+                en un formato de texto compatible.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div style="background: #fafafa; padding: 20px; border-radius: 16px; width: 220px;">
-        <h3>Ahorra tiempo</h3>
-        <p style="color: #666;">Evita repetir tu contexto una y otra vez.</p>
-      </div>
+      <div class="features">
+        <div class="feature">
+          <h4>No empieces de cero</h4>
+          <p>Conserva tu tono, tus gustos y la forma en la que te gusta que te respondan.</p>
+        </div>
 
+        <div class="feature">
+          <h4>Más portable</h4>
+          <p>Usa un perfil listo para copiar en otra IA sin tener que explicarte otra vez.</p>
+        </div>
+
+        <div class="feature">
+          <h4>Más rápido</h4>
+          <p>Ahorra tiempo cada vez que pruebas una nueva herramienta o chatbot.</p>
+        </div>
+
+        <div class="feature">
+          <h4>Más claro</h4>
+          <p>Convierte conversaciones desordenadas en una identidad útil y estructurada.</p>
+        </div>
+      </div>
     </div>
-
   </div>
 
   <script>
+    function mostrarModo(modo) {
+      const modoTexto = document.getElementById("modoTexto");
+      const modoArchivo = document.getElementById("modoArchivo");
+      const btnTexto = document.getElementById("btnTexto");
+      const btnArchivo = document.getElementById("btnArchivo");
+
+      if (modo === "texto") {
+        modoTexto.style.display = "block";
+        modoArchivo.style.display = "none";
+        btnTexto.classList.add("active");
+        btnArchivo.classList.remove("active");
+      } else {
+        modoTexto.style.display = "none";
+        modoArchivo.style.display = "block";
+        btnArchivo.classList.add("active");
+        btnTexto.classList.remove("active");
+      }
+    }
+
+    function leerArchivo() {
+      const input = document.getElementById("fileInput");
+      const file = input.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        const contenido = e.target.result;
+        document.getElementById("archivoPreview").style.display = "block";
+        document.getElementById("archivoTexto").value = contenido;
+      };
+
+      reader.readAsText(file);
+    }
+
     async function crearPerfil() {
-      const texto = document.getElementById("chatInput").value;
       const resultado = document.getElementById("resultado");
       const boton = document.getElementById("botonCrear");
 
+      const textoManual = document.getElementById("chatInput").value.trim();
+      const archivoTextoEl = document.getElementById("archivoTexto");
+      const textoArchivo = archivoTextoEl ? archivoTextoEl.value.trim() : "";
+      const texto = textoManual || textoArchivo;
+
       if (texto.length < 50) {
-        alert("Pega más texto para analizar 😅");
+        alert("Pega más texto o sube un archivo con suficiente contenido 😅");
         return;
       }
 
@@ -97,11 +530,13 @@
 
         if (data.resultado) {
           resultado.innerText = data.resultado;
+        } else if (data.error) {
+          resultado.innerText = "Error: " + data.error;
         } else {
-          resultado.innerText = "Error generando perfil.";
+          resultado.innerText = "Hubo un error generando el perfil.";
         }
       } catch (error) {
-        resultado.innerText = "Error conectando con IA.";
+        resultado.innerText = "Error conectando con la IA.";
       }
 
       boton.disabled = false;
@@ -110,14 +545,15 @@
 
     function copiarPerfil() {
       const texto = document.getElementById("resultado").innerText;
+
+      if (!texto || texto.trim() === "" || texto === "Tu perfil aparecerá acá.") {
+        alert("Todavía no hay perfil para copiar.");
+        return;
+      }
+
       navigator.clipboard.writeText(texto);
       alert("Perfil copiado 🚀");
     }
   </script>
-
-</body>
-</html>
-  </script>
-
 </body>
 </html>
