@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MemoryBridge AI</title>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <style>
@@ -16,29 +15,23 @@
       --bg-1: #0a0f1d;
       --bg-2: #111827;
       --panel: rgba(15, 23, 42, 0.84);
-      --panel-solid: #111827;
-      --panel-2: #0f172a;
       --border: rgba(255, 255, 255, 0.08);
-      --border-2: rgba(255, 255, 255, 0.14);
       --text: #e5e7eb;
       --muted: #9ca3af;
       --blue: #2563eb;
-      --blue-2: #3b82f6;
       --green: #22c55e;
       --danger: #ef4444;
       --shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
       --radius: 20px;
     }
 
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      min-height: 100%;
       font-family: Inter, Arial, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(34, 197, 94, 0.12), transparent 24%),
+        radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(34,197,94,0.12), transparent 24%),
         linear-gradient(180deg, var(--bg-1), var(--bg-2));
     }
 
@@ -58,7 +51,6 @@
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border);
       border-radius: 18px;
-      backdrop-filter: blur(14px);
       box-shadow: var(--shadow);
     }
 
@@ -78,26 +70,6 @@
       justify-content: center;
       font-weight: 800;
       color: white;
-      box-shadow: 0 10px 24px rgba(59, 130, 246, 0.28);
-    }
-
-    .brand-text h1 {
-      margin: 0;
-      font-size: 18px;
-      letter-spacing: -0.3px;
-    }
-
-    .brand-text p {
-      margin: 2px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .header-right {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
     }
 
     .pill {
@@ -125,14 +97,14 @@
       font-size: 13px;
     }
 
-    .hero h2 {
+    .hero h1 {
       margin: 0;
       font-size: 54px;
       line-height: 1.02;
       letter-spacing: -2px;
     }
 
-    .hero h2 span {
+    .hero h1 span {
       background: linear-gradient(90deg, #ffffff, #8ab4ff 55%, #7ef7d0 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -160,11 +132,6 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-    }
-
-    .main-card,
-    .side-card {
       padding: 22px;
     }
 
@@ -212,35 +179,15 @@
 
     .provider:hover {
       transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.07);
     }
 
     .provider.active {
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.22), rgba(34, 197, 94, 0.16));
-      border-color: rgba(34, 197, 94, 0.35);
-      box-shadow: 0 12px 30px rgba(34, 197, 94, 0.08);
-    }
-
-    .provider-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .provider-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.08);
-      font-size: 18px;
+      background: linear-gradient(135deg, rgba(37,99,235,0.22), rgba(34,197,94,0.16));
+      border-color: rgba(34,197,94,0.35);
     }
 
     .provider h3 {
-      margin: 0 0 6px;
+      margin: 8px 0 6px;
       font-size: 15px;
     }
 
@@ -251,13 +198,24 @@
       line-height: 1.55;
     }
 
+    .provider-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.08);
+      font-size: 18px;
+    }
+
     .steps-box {
       margin-top: 6px;
       margin-bottom: 22px;
       padding: 16px;
       border-radius: 16px;
       border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(255,255,255,0.04);
     }
 
     .steps-box h4 {
@@ -277,7 +235,7 @@
     .textarea {
       width: 100%;
       border-radius: 14px;
-      border: 1px solid var(--border-2);
+      border: 1px solid rgba(255,255,255,0.14);
       background: #020617;
       color: white;
       padding: 14px 15px;
@@ -313,10 +271,6 @@
       font-size: 14px;
     }
 
-    .mode-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
     .mode-btn.active {
       background: linear-gradient(135deg, var(--blue), var(--green));
       color: white;
@@ -341,7 +295,7 @@
     }
 
     .dropzone.drag {
-      border-color: var(--blue-2);
+      border-color: #3b82f6;
       background: rgba(37, 99, 235, 0.08);
     }
 
@@ -393,10 +347,10 @@
       font-size: 14px;
       font-weight: 600;
       transition: 0.2s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .btn-primary {
@@ -410,10 +364,33 @@
       border: 1px solid #2b3648;
     }
 
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.14);
-      color: #fecaca;
-      border: 1px solid rgba(239, 68, 68, 0.25);
+    .btn-pay {
+      background: #00a650;
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .pricing-box {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .pricing-box h4 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .pricing-box p {
+      margin: 6px 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
     }
 
     .result {
@@ -480,10 +457,6 @@
       font-size: 12px;
     }
 
-    .mini-btn:hover {
-      background: #162033;
-    }
-
     .stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -527,7 +500,7 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .hero h2 {
+      .hero h1 {
         font-size: 38px;
       }
     }
@@ -542,14 +515,11 @@
         flex-direction: column;
       }
 
-      .btn,
-      .btn-danger,
-      .btn-secondary,
-      .btn-primary {
+      .btn {
         width: 100%;
       }
 
-      .hero h2 {
+      .hero h1 {
         font-size: 30px;
       }
     }
@@ -566,50 +536,48 @@
         </div>
       </div>
 
-      <div class="header-right">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <div class="pill" id="profileCountPill">0 perfiles</div>
         <div class="pill">MVP activo</div>
       </div>
     </div>
 
     <div class="hero">
-      <div class="hero-badge">migra tu contexto sin empezar de cero</div>
-      <h2>Tu <span>memoria</span> para cualquier IA</h2>
+      <div class="hero-badge">sin empezar de cero</div>
+      <h1>No vuelvas a repetir lo mismo en cada <span>IA</span></h1>
       <p>
-        Sube tus chats, crea un perfil portable y reutilízalo en otras herramientas
-        sin volver a explicar quién eres cada vez.
+        Sube tus chats y obtén un perfil listo para usar en ChatGPT, Gemini o Claude en segundos.
+        Sin prompts. Sin pensar. Sin repetir.
       </p>
     </div>
 
     <div class="layout">
-      <div class="card main-card">
+      <div class="card">
         <div class="section-chip">Paso 1</div>
         <h3 class="section-title">Selecciona desde qué IA vienes</h3>
-        <p class="section-subtitle">
-          Elegir el origen hace que la experiencia se sienta más guiada y clara.
-        </p>
+        <p class="section-subtitle">Eso hace que la experiencia se sienta más clara y guiada.</p>
 
         <div class="providers">
           <div class="provider active" onclick="selectProvider('chatgpt', this)">
-            <div class="provider-top"><div class="provider-icon">💬</div></div>
+            <div class="provider-icon">💬</div>
             <h3>ChatGPT</h3>
             <p>Exporta tu historial y súbelo acá.</p>
           </div>
 
           <div class="provider" onclick="selectProvider('claude', this)">
-            <div class="provider-top"><div class="provider-icon">🧠</div></div>
+            <div class="provider-icon">🧠</div>
             <h3>Claude</h3>
-            <p>Importa tus conversaciones desde privacidad.</p>
+            <p>Importa conversaciones desde privacidad.</p>
           </div>
 
           <div class="provider" onclick="selectProvider('gemini', this)">
-            <div class="provider-top"><div class="provider-icon">✨</div></div>
+            <div class="provider-icon">✨</div>
             <h3>Gemini</h3>
             <p>Descarga tus datos y conviértelos en perfil.</p>
           </div>
 
           <div class="provider" onclick="selectProvider('otro', this)">
-            <div class="provider-top"><div class="provider-icon">📁</div></div>
+            <div class="provider-icon">📁</div>
             <h3>Otro</h3>
             <p>Sirve para texto o archivos compatibles.</p>
           </div>
@@ -622,17 +590,13 @@
 
         <div class="section-chip">Paso 2</div>
         <h3 class="section-title">Ponle nombre a tu perfil</h3>
-        <p class="section-subtitle">
-          Te sirve para guardar varios perfiles sin enredarte después.
-        </p>
+        <p class="section-subtitle">Te sirve para guardar varios perfiles sin enredarte después.</p>
 
         <input id="profileName" class="input" placeholder="ej: nicolas-business-profile" />
 
         <div class="section-chip" style="margin-top:18px;">Paso 3</div>
         <h3 class="section-title">Pega texto o sube un archivo</h3>
-        <p class="section-subtitle">
-          Entre más largo y más real sea el contenido, mejor saldrá el perfil.
-        </p>
+        <p class="section-subtitle">Entre más largo y más real sea el contenido, mejor saldrá el perfil.</p>
 
         <div class="mode-toggle">
           <button class="mode-btn active" id="modeTextBtn" onclick="setMode('text')">Pegar chats</button>
@@ -668,18 +632,28 @@
           <button class="btn btn-secondary" onclick="downloadPromptOnly()">Descargar prompt</button>
         </div>
 
+        <div class="pricing-box">
+          <h4>Gratis: 1 perfil</h4>
+          <p>Premium: acceso completo por 5.000 COP</p>
+          <p>Paga con Mercado Pago para desbloquear más uso.</p>
+
+          <div class="actions">
+            <a class="btn btn-pay" href="https://mpago.li/2g6P1wp" target="_blank" rel="noopener noreferrer">
+              Pagar con Mercado Pago
+            </a>
+          </div>
+        </div>
+
         <div id="resultBox" class="result placeholder">Tu perfil aparecerá aquí.</div>
       </div>
 
-      <div class="card side-card">
+      <div class="card">
         <div class="section-chip">Historial local</div>
         <h3 class="section-title">Tus últimos perfiles</h3>
-        <p class="section-subtitle">
-          Se guardan en este navegador para que no se pierdan al recargar.
-        </p>
+        <p class="section-subtitle">Se guardan en este navegador para que no se pierdan al recargar.</p>
 
         <div class="actions" style="margin-top:10px;">
-          <button class="btn btn-danger" onclick="clearAllProfiles()">Borrar todos</button>
+          <button class="btn btn-secondary" onclick="clearAllProfiles()">Borrar todos</button>
         </div>
 
         <div id="savedProfiles" class="saved-list">
@@ -710,9 +684,7 @@
       </div>
     </div>
 
-    <div class="footer">
-      MemoryBridge AI · MVP funcional
-    </div>
+    <div class="footer">MemoryBridge AI · MVP funcional</div>
   </div>
 
   <script>
@@ -721,7 +693,7 @@
     let lastFullProfile = "";
     let lastPromptOnly = "";
 
-    const STORAGE_KEY = "memorybridge_profiles_full";
+    const STORAGE_KEY = "memorybridge_profiles_final";
 
     const providerSteps = {
       chatgpt: {
@@ -833,15 +805,6 @@
     function updateFileCounter() {
       const value = document.getElementById("fileText").value;
       document.getElementById("fileCharCounter").innerText = `${value.length} caracteres`;
-    }
-
-    function escapeHtml(text) {
-      return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
     }
 
     function downloadTextFile(filename, content) {
@@ -977,11 +940,11 @@
       container.innerHTML = profiles.map(profile => `
         <div class="saved-item">
           <div class="saved-top">
-            <div class="saved-name">${escapeHtml(profile.name)}</div>
-            <div class="saved-meta">${escapeHtml(profile.date)}</div>
+            <div class="saved-name">${profile.name}</div>
+            <div class="saved-meta">${profile.date}</div>
           </div>
 
-          <div class="saved-meta">Proveedor: ${escapeHtml(profile.provider)}</div>
+          <div class="saved-meta">Proveedor: ${profile.provider}</div>
 
           <div class="saved-actions">
             <button class="mini-btn" onclick="openSavedProfile(${profile.id})">Abrir</button>
@@ -1059,7 +1022,6 @@
     }
 
     async function generateProfile() {
-      const resultBox = document.getElementById("resultBox");
       const button = document.getElementById("generateBtn");
 
       const textInput = document.getElementById("chatInput").value.trim();
