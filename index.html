@@ -22,8 +22,8 @@
       --text: #e5e7eb;
       --muted: #9ca3af;
       --blue: #2563eb;
+      --blue-2: #3b82f6;
       --green: #22c55e;
-      --danger: #ef4444;
       --shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
       --radius: 20px;
     }
@@ -580,7 +580,7 @@
     <div class="top-auth">
       <div class="auth-left">
         <input id="emailInput" class="auth-input" placeholder="tu correo para iniciar sesión" />
-        <button class="btn btn-primary" onclick="login()">Iniciar sesión</button>
+        <button class="btn btn-primary" id="loginBtn" onclick="login()">Iniciar sesión</button>
         <button class="btn btn-secondary" onclick="logout()">Cerrar sesión</button>
       </div>
       <div class="auth-right" id="authStatus">No has iniciado sesión</div>
@@ -747,10 +747,16 @@
   </div>
 
   <script>
-    const supabase = window.supabase.createClient(
-      "https://hthovlyivohvsjasaqify.supabase.co",
-      "sb_publishable_WYTHqLQMRe9V3gyBd7nsxA_24FFiuS7"
-    );
+    const SUPABASE_URL = "https://hthovlyivohvsjasaqify.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_WYTHqLQMRe9V3gyBd7nsxA_24FFiuS7";
+
+    let supabaseClient = null;
+
+    if (!window.supabase) {
+      alert("No cargó Supabase. Revisa internet o recarga la página.");
+    } else {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
 
     let currentProvider = "chatgpt";
     let currentMode = "text";
@@ -1067,6 +1073,11 @@
     }
 
     async function login() {
+      if (!supabaseClient) {
+        alert("Supabase no está listo.");
+        return;
+      }
+
       const email = document.getElementById("emailInput").value.trim();
 
       if (!email) {
@@ -1074,44 +1085,73 @@
         return;
       }
 
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: window.location.origin
-        }
-      });
+      document.getElementById("loginBtn").disabled = true;
+      document.getElementById("loginBtn").innerText = "Enviando...";
 
-      if (error) {
-        alert("error: " + error.message);
-      } else {
-        alert("revisa tu correo 📩");
+      try {
+        const { error } = await supabaseClient.auth.signInWithOtp({
+          email,
+          options: {
+            emailRedirectTo: window.location.origin
+          }
+        });
+
+        if (error) {
+          alert("error: " + error.message);
+          console.error(error);
+        } else {
+          alert("revisa tu correo 📩");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("falló el login");
       }
+
+      document.getElementById("loginBtn").disabled = false;
+      document.getElementById("loginBtn").innerText = "Iniciar sesión";
     }
 
     async function logout() {
-      await supabase.auth.signOut();
+      if (!supabaseClient) return;
+      await supabaseClient.auth.signOut();
       updateAuthUI();
       alert("sesión cerrada");
     }
 
     async function updateAuthUI() {
-      const { data, error } = await supabase.auth.getUser();
-
-      if (error) {
-        document.getElementById("authStatus").innerText = "Error revisando sesión";
+      if (!supabaseClient) {
+        document.getElementById("authStatus").innerText = "Supabase no cargó";
         return;
       }
 
-      if (data.user) {
-        document.getElementById("authStatus").innerText = `Sesión activa: ${data.user.email}`;
-        document.getElementById("emailInput").value = data.user.email || "";
-      } else {
-        document.getElementById("authStatus").innerText = "No has iniciado sesión";
+      try {
+        const { data, error } = await supabaseClient.auth.getUser();
+
+        if (error) {
+          document.getElementById("authStatus").innerText = "Error revisando sesión";
+          console.error(error);
+          return;
+        }
+
+        if (data.user) {
+          document.getElementById("authStatus").innerText = `Sesión activa: ${data.user.email}`;
+          document.getElementById("emailInput").value = data.user.email || "";
+        } else {
+          document.getElementById("authStatus").innerText = "No has iniciado sesión";
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById("authStatus").innerText = "Error revisando sesión";
       }
     }
 
     async function generateProfile() {
-      const { data } = await supabase.auth.getUser();
+      if (!supabaseClient) {
+        alert("Supabase no está listo.");
+        return;
+      }
+
+      const { data } = await supabaseClient.auth.getUser();
 
       if (!data.user) {
         alert("primero inicia sesión con tu correo");
@@ -1161,6 +1201,7 @@
         showResult(data.resultado);
         saveProfileToHistory();
       } catch (error) {
+        console.error(error);
         showResult("Error conectando con la IA.");
       }
 
@@ -1236,9 +1277,11 @@
       }
     });
 
-    supabase.auth.onAuthStateChange(() => {
-      updateAuthUI();
-    });
+    if (supabaseClient) {
+      supabaseClient.auth.onAuthStateChange(() => {
+        updateAuthUI();
+      });
+    }
 
     updateProviderSteps();
     updateTextCounter();
