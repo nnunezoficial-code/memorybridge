@@ -1,75 +1,1250 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>MemoryBridge</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MemoryBridge AI</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-<body style="background:#0f172a;color:white;font-family:sans-serif;padding:40px;">
 
-<h2>Login</h2>
-
-<input id="emailInput" placeholder="tu correo" style="padding:10px;width:250px;">
-<button onclick="login()">Iniciar sesión</button>
-<button onclick="logout()">Cerrar sesión</button>
-
-<p id="status">No logueado</p>
-
-<hr>
-
-<button onclick="generate()">Crear perfil</button>
-
-<script>
-const supabase = window.supabase.createClient(
-  "https://hthovlyivohvsjasaqify.supabase.co",
-  "sb_publishable_WYTHqLQMRe9V3gyBd7nsxA_24FFiuS7"
-);
-
-async function login() {
-  const email = document.getElementById("emailInput").value;
-
-  const { error } = await supabase.auth.signInWithOtp({
-    email: email,
-    options: {
-      emailRedirectTo: window.location.origin
+  <style>
+    * {
+      box-sizing: border-box;
     }
-  });
 
-  if (error) {
-    alert(error.message);
-  } else {
-    alert("revisa tu correo");
-  }
-}
+    :root {
+      --bg-1: #0a0f1d;
+      --bg-2: #111827;
+      --panel: rgba(15, 23, 42, 0.84);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-2: rgba(255, 255, 255, 0.14);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --blue: #2563eb;
+      --green: #22c55e;
+      --danger: #ef4444;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
+      --radius: 20px;
+    }
 
-async function logout() {
-  await supabase.auth.signOut();
-  checkUser();
-}
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(34,197,94,0.12), transparent 24%),
+        linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    }
 
-async function checkUser() {
-  const { data } = await supabase.auth.getUser();
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
 
-  if (data.user) {
-    document.getElementById("status").innerText = "Logueado: " + data.user.email;
-  } else {
-    document.getElementById("status").innerText = "No logueado";
-  }
-}
+    .top-auth {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 16px 18px;
+      margin-bottom: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
 
-async function generate() {
-  const { data } = await supabase.auth.getUser();
+    .auth-left {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
 
-  if (!data.user) {
-    alert("tienes que iniciar sesión primero");
-    return;
-  }
+    .auth-right {
+      color: var(--muted);
+      font-size: 14px;
+    }
 
-  alert("ya puedes usar la app 🔥");
-}
+    .auth-input {
+      min-width: 260px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border-2);
+      background: #020617;
+      color: white;
+      outline: none;
+      font-size: 14px;
+    }
 
-checkUser();
-</script>
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+      margin-bottom: 26px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
 
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: #dbe7ff;
+      font-size: 13px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: #dbe7ff;
+      font-size: 13px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 54px;
+      line-height: 1.02;
+      letter-spacing: -2px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #ffffff, #8ab4ff 55%, #7ef7d0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 820px;
+      margin: 16px auto 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .section-chip {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: #a9c1ff;
+      font-size: 12px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.5px;
+    }
+
+    .section-subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .providers {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+      margin-bottom: 18px;
+    }
+
+    .provider {
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      transition: 0.2s ease;
+      user-select: none;
+    }
+
+    .provider:hover {
+      transform: translateY(-2px);
+    }
+
+    .provider.active {
+      background: linear-gradient(135deg, rgba(37,99,235,0.22), rgba(34,197,94,0.16));
+      border-color: rgba(34,197,94,0.35);
+    }
+
+    .provider h3 {
+      margin: 8px 0 6px;
+      font-size: 15px;
+    }
+
+    .provider p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.55;
+    }
+
+    .provider-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.08);
+      font-size: 18px;
+    }
+
+    .steps-box {
+      margin-top: 6px;
+      margin-bottom: 22px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .steps-box h4 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .steps-box ol {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .input,
+    .textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--border-2);
+      background: #020617;
+      color: white;
+      padding: 14px 15px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .input::placeholder,
+    .textarea::placeholder,
+    .auth-input::placeholder {
+      color: #6b7280;
+    }
+
+    .textarea {
+      min-height: 220px;
+      resize: vertical;
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 14px 0 14px;
+    }
+
+    .mode-btn {
+      padding: 11px 15px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: #dbe7ff;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-size: 14px;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      color: white;
+      border: none;
+    }
+
+    .counter {
+      text-align: right;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .dropzone {
+      margin-top: 6px;
+      padding: 24px 18px;
+      border-radius: 16px;
+      border: 2px dashed #334155;
+      background: rgba(255, 255, 255, 0.03);
+      text-align: center;
+      transition: 0.2s ease;
+    }
+
+    .dropzone.drag {
+      border-color: #3b82f6;
+      background: rgba(37, 99, 235, 0.08);
+    }
+
+    .dropzone strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .dropzone p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .file-label {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .preview {
+      display: none;
+      margin-top: 14px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #1f2937;
+      color: white;
+      border: 1px solid #2b3648;
+    }
+
+    .btn-pay {
+      background: #00a650;
+      color: white;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .pricing-box {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .pricing-box h4 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .pricing-box p {
+      margin: 6px 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .result {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #020617;
+      min-height: 140px;
+      white-space: pre-line;
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    .result.placeholder {
+      color: var(--muted);
+    }
+
+    .saved-list {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .saved-item {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #020617;
+    }
+
+    .saved-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .saved-name {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .saved-meta {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .saved-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mini-btn {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: white;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .stat {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+    }
+
+    .stat b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .stat p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 26px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .providers {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero h1 {
+        font-size: 38px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .providers,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .auth-left {
+        width: 100%;
+      }
+
+      .auth-input {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-auth">
+      <div class="auth-left">
+        <input id="emailInput" class="auth-input" placeholder="tu correo para iniciar sesión" />
+        <button class="btn btn-primary" onclick="login()">Iniciar sesión</button>
+        <button class="btn btn-secondary" onclick="logout()">Cerrar sesión</button>
+      </div>
+      <div class="auth-right" id="authStatus">No has iniciado sesión</div>
+    </div>
+
+    <div class="header">
+      <div class="brand">
+        <div class="brand-icon">MB</div>
+        <div>
+          <div style="font-weight:700;">MemoryBridge AI</div>
+          <div style="font-size:13px;color:#9ca3af;">portable context for every AI</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="pill" id="profileCountPill">0 perfiles</div>
+        <div class="pill">Login activo</div>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-badge">sin empezar de cero</div>
+      <h1>No vuelvas a repetir lo mismo en cada <span>IA</span></h1>
+      <p>
+        Sube tus chats y obtén un perfil listo para usar en ChatGPT, Gemini o Claude en segundos.
+        Sin prompts. Sin pensar. Sin repetir.
+      </p>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <div class="section-chip">Paso 1</div>
+        <h3 class="section-title">Selecciona desde qué IA vienes</h3>
+        <p class="section-subtitle">Eso hace que la experiencia se sienta más clara y guiada.</p>
+
+        <div class="providers">
+          <div class="provider active" onclick="selectProvider('chatgpt', this)">
+            <div class="provider-icon">💬</div>
+            <h3>ChatGPT</h3>
+            <p>Exporta tu historial y súbelo acá.</p>
+          </div>
+
+          <div class="provider" onclick="selectProvider('claude', this)">
+            <div class="provider-icon">🧠</div>
+            <h3>Claude</h3>
+            <p>Importa conversaciones desde privacidad.</p>
+          </div>
+
+          <div class="provider" onclick="selectProvider('gemini', this)">
+            <div class="provider-icon">✨</div>
+            <h3>Gemini</h3>
+            <p>Descarga tus datos y conviértelos en perfil.</p>
+          </div>
+
+          <div class="provider" onclick="selectProvider('otro', this)">
+            <div class="provider-icon">📁</div>
+            <h3>Otro</h3>
+            <p>Sirve para texto o archivos compatibles.</p>
+          </div>
+        </div>
+
+        <div class="steps-box">
+          <h4 id="stepsTitle">Pasos para ChatGPT</h4>
+          <ol id="stepsList"></ol>
+        </div>
+
+        <div class="section-chip">Paso 2</div>
+        <h3 class="section-title">Ponle nombre a tu perfil</h3>
+        <p class="section-subtitle">Te sirve para guardar varios perfiles sin enredarte después.</p>
+
+        <input id="profileName" class="input" placeholder="ej: nicolas-business-profile" />
+
+        <div class="section-chip" style="margin-top:18px;">Paso 3</div>
+        <h3 class="section-title">Pega texto o sube un archivo</h3>
+        <p class="section-subtitle">Entre más largo y más real sea el contenido, mejor saldrá el perfil.</p>
+
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="modeTextBtn" onclick="setMode('text')">Pegar chats</button>
+          <button class="mode-btn" id="modeFileBtn" onclick="setMode('file')">Subir archivo</button>
+        </div>
+
+        <div id="textMode">
+          <textarea id="chatInput" class="textarea" placeholder="Pega aquí tus conversaciones..."></textarea>
+          <div class="counter" id="charCounter">0 caracteres</div>
+        </div>
+
+        <div id="fileMode" style="display:none;">
+          <div class="dropzone" id="dropzone">
+            <strong>Arrastra tu archivo acá</strong>
+            <p>o selecciónalo manualmente</p>
+            <label class="file-label" for="fileInput">Elegir archivo</label>
+            <input class="file-input" type="file" id="fileInput" accept=".txt,.md,.json,.csv,.html,.zip" />
+            <p style="margin-top:12px;">Formatos soportados: .txt, .md, .json, .csv, .html, .zip</p>
+          </div>
+
+          <div class="preview" id="filePreview">
+            <p class="section-subtitle" style="margin-bottom:10px;">Vista previa del texto detectado</p>
+            <textarea id="fileText" class="textarea"></textarea>
+            <div class="counter" id="fileCharCounter">0 caracteres</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="generateBtn" onclick="generateProfile()">Crear perfil</button>
+          <button class="btn btn-secondary" onclick="copyFullProfile()">Copiar perfil</button>
+          <button class="btn btn-secondary" onclick="copyPromptOnly()">Copiar prompt</button>
+          <button class="btn btn-secondary" onclick="downloadFullProfile()">Descargar perfil</button>
+          <button class="btn btn-secondary" onclick="downloadPromptOnly()">Descargar prompt</button>
+        </div>
+
+        <div class="pricing-box">
+          <h4>Gratis: 1 perfil</h4>
+          <p>Premium: acceso completo por 5.000 COP</p>
+          <p>Paga con Mercado Pago para desbloquear más uso.</p>
+
+          <div class="actions">
+            <a class="btn btn-pay" href="https://mpago.li/2g6P1wp" target="_blank" rel="noopener noreferrer">
+              Pagar con Mercado Pago
+            </a>
+          </div>
+        </div>
+
+        <div id="resultBox" class="result placeholder">Tu perfil aparecerá aquí.</div>
+      </div>
+
+      <div class="card">
+        <div class="section-chip">Historial local</div>
+        <h3 class="section-title">Tus últimos perfiles</h3>
+        <p class="section-subtitle">Se guardan en este navegador para que no se pierdan al recargar.</p>
+
+        <div class="actions" style="margin-top:10px;">
+          <button class="btn btn-secondary" onclick="clearAllProfiles()">Borrar todos</button>
+        </div>
+
+        <div id="savedProfiles" class="saved-list">
+          <div class="result placeholder">Todavía no has guardado perfiles.</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <b>No empieces de cero</b>
+            <p>Conserva tu tono, tus gustos y tu contexto general.</p>
+          </div>
+
+          <div class="stat">
+            <b>Ahorra tiempo</b>
+            <p>No repitas la misma explicación cada vez que cambias de IA.</p>
+          </div>
+
+          <div class="stat">
+            <b>Más portable</b>
+            <p>Llévate un prompt listo y un perfil completo descargable.</p>
+          </div>
+
+          <div class="stat">
+            <b>Más producto</b>
+            <p>Ya se siente como una herramienta real y no una simple demo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">MemoryBridge AI · V1</div>
+  </div>
+
+  <script>
+    const supabase = window.supabase.createClient(
+      "https://hthovlyivohvsjasaqify.supabase.co",
+      "sb_publishable_WYTHqLQMRe9V3gyBd7nsxA_24FFiuS7"
+    );
+
+    let currentProvider = "chatgpt";
+    let currentMode = "text";
+    let lastFullProfile = "";
+    let lastPromptOnly = "";
+
+    const STORAGE_KEY = "memorybridge_profiles_auth";
+
+    const providerSteps = {
+      chatgpt: {
+        title: "Pasos para ChatGPT",
+        steps: [
+          "Abre ChatGPT.",
+          "Ve a settings o configuración.",
+          "Entra a Data Controls o controles de datos.",
+          "Exporta tu información.",
+          "Cuando tengas el archivo o el texto, súbelo acá."
+        ]
+      },
+      claude: {
+        title: "Pasos para Claude",
+        steps: [
+          "Abre Claude.",
+          "Ve a Settings.",
+          "Entra a Privacy.",
+          "Exporta tus datos.",
+          "Súbelos acá o pega el texto manualmente."
+        ]
+      },
+      gemini: {
+        title: "Pasos para Gemini",
+        steps: [
+          "Busca la opción para descargar tus datos.",
+          "Descarga el archivo disponible.",
+          "Abre el archivo exportado.",
+          "Copia el contenido o súbelo acá.",
+          "Genera tu perfil."
+        ]
+      },
+      otro: {
+        title: "Pasos para otra IA",
+        steps: [
+          "Busca si esa herramienta deja exportar chats.",
+          "Si no, copia el texto manualmente.",
+          "Pégalo o súbelo aquí.",
+          "Revisa la vista previa.",
+          "Genera tu perfil."
+        ]
+      }
+    };
+
+    function updateProviderSteps() {
+      const info = providerSteps[currentProvider];
+      document.getElementById("stepsTitle").innerText = info.title;
+
+      const list = document.getElementById("stepsList");
+      list.innerHTML = "";
+
+      info.steps.forEach(step => {
+        const li = document.createElement("li");
+        li.textContent = step;
+        list.appendChild(li);
+      });
+    }
+
+    function selectProvider(provider, element) {
+      currentProvider = provider;
+      document.querySelectorAll(".provider").forEach(card => {
+        card.classList.remove("active");
+      });
+      element.classList.add("active");
+      updateProviderSteps();
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+
+      const textMode = document.getElementById("textMode");
+      const fileMode = document.getElementById("fileMode");
+      const textBtn = document.getElementById("modeTextBtn");
+      const fileBtn = document.getElementById("modeFileBtn");
+
+      if (mode === "text") {
+        textMode.style.display = "block";
+        fileMode.style.display = "none";
+        textBtn.classList.add("active");
+        fileBtn.classList.remove("active");
+      } else {
+        textMode.style.display = "none";
+        fileMode.style.display = "block";
+        fileBtn.classList.add("active");
+        textBtn.classList.remove("active");
+      }
+    }
+
+    function sanitizeFileName(name) {
+      return (name || "")
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-zA-Z0-9-_]/g, "")
+        .toLowerCase();
+    }
+
+    function getProfileName() {
+      const value = document.getElementById("profileName").value;
+      return sanitizeFileName(value) || "memorybridge-profile";
+    }
+
+    function updateTextCounter() {
+      const value = document.getElementById("chatInput").value;
+      document.getElementById("charCounter").innerText = `${value.length} caracteres`;
+    }
+
+    function updateFileCounter() {
+      const value = document.getElementById("fileText").value;
+      document.getElementById("fileCharCounter").innerText = `${value.length} caracteres`;
+    }
+
+    function downloadTextFile(filename, content) {
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function showResult(text, isPlaceholder = false) {
+      const box = document.getElementById("resultBox");
+      box.classList.toggle("placeholder", isPlaceholder);
+      box.innerText = text;
+    }
+
+    async function readUploadedFile(file) {
+      if (!file) return;
+      const filename = file.name.toLowerCase();
+
+      if (filename.endsWith(".zip")) {
+        await readZipFile(file);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        document.getElementById("filePreview").style.display = "block";
+        document.getElementById("fileText").value = e.target.result;
+        updateFileCounter();
+      };
+      reader.readAsText(file);
+    }
+
+    async function readZipFile(file) {
+      try {
+        const zip = await JSZip.loadAsync(file);
+        const names = Object.keys(zip.files);
+        let combined = "";
+
+        for (const name of names) {
+          const entry = zip.files[name];
+          if (
+            !entry.dir &&
+            (
+              name.endsWith(".txt") ||
+              name.endsWith(".md") ||
+              name.endsWith(".json") ||
+              name.endsWith(".csv") ||
+              name.endsWith(".html")
+            )
+          ) {
+            const text = await entry.async("string");
+            combined += `\n\n===== ${name} =====\n\n${text}`;
+          }
+        }
+
+        if (!combined.trim()) {
+          alert("No encontré archivos de texto útiles dentro del ZIP.");
+          return;
+        }
+
+        document.getElementById("filePreview").style.display = "block";
+        document.getElementById("fileText").value = combined.trim();
+        updateFileCounter();
+      } catch (error) {
+        alert("No pude abrir ese ZIP. Prueba con otro.");
+      }
+    }
+
+    function extractSection(fullText, startMarker, nextMarkers) {
+      const startIndex = fullText.indexOf(startMarker);
+      if (startIndex === -1) return "";
+
+      const from = startIndex + startMarker.length;
+      let to = fullText.length;
+
+      for (const marker of nextMarkers) {
+        const index = fullText.indexOf(marker, from);
+        if (index !== -1 && index < to) {
+          to = index;
+        }
+      }
+
+      return fullText.slice(from, to).trim();
+    }
+
+    function saveProfileToHistory() {
+      if (!lastFullProfile.trim()) return;
+
+      const profiles = getSavedProfiles();
+      profiles.unshift({
+        id: Date.now(),
+        name: getProfileName(),
+        provider: currentProvider,
+        date: new Date().toLocaleString(),
+        content: lastFullProfile,
+        prompt: lastPromptOnly
+      });
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles.slice(0, 12)));
+      renderSavedProfiles();
+    }
+
+    function getSavedProfiles() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function renderSavedProfiles() {
+      const container = document.getElementById("savedProfiles");
+      const profiles = getSavedProfiles();
+
+      document.getElementById("profileCountPill").innerText = `${profiles.length} perfiles`;
+
+      if (!profiles.length) {
+        container.innerHTML = `<div class="result placeholder">Todavía no has guardado perfiles.</div>`;
+        return;
+      }
+
+      container.innerHTML = profiles.map(profile => `
+        <div class="saved-item">
+          <div class="saved-top">
+            <div class="saved-name">${profile.name}</div>
+            <div class="saved-meta">${profile.date}</div>
+          </div>
+          <div class="saved-meta">Proveedor: ${profile.provider}</div>
+          <div class="saved-actions">
+            <button class="mini-btn" onclick="openSavedProfile(${profile.id})">Abrir</button>
+            <button class="mini-btn" onclick="copySavedProfile(${profile.id})">Copiar</button>
+            <button class="mini-btn" onclick="copySavedPrompt(${profile.id})">Copiar prompt</button>
+            <button class="mini-btn" onclick="downloadSavedProfile(${profile.id})">Descargar perfil</button>
+            <button class="mini-btn" onclick="downloadSavedPrompt(${profile.id})">Descargar prompt</button>
+            <button class="mini-btn" onclick="deleteSavedProfile(${profile.id})">Borrar</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function openSavedProfile(id) {
+      const profile = getSavedProfiles().find(p => p.id === id);
+      if (!profile) return;
+      lastFullProfile = profile.content || "";
+      lastPromptOnly = profile.prompt || "";
+      document.getElementById("profileName").value = profile.name || "";
+      showResult(profile.content || "Perfil vacío");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function copySavedProfile(id) {
+      const profile = getSavedProfiles().find(p => p.id === id);
+      if (!profile) return;
+      navigator.clipboard.writeText(profile.content || "");
+      alert("Perfil guardado copiado 🚀");
+    }
+
+    function copySavedPrompt(id) {
+      const profile = getSavedProfiles().find(p => p.id === id);
+      if (!profile || !profile.prompt) {
+        alert("Ese perfil no tiene prompt guardado.");
+        return;
+      }
+      navigator.clipboard.writeText(profile.prompt);
+      alert("Prompt guardado copiado ⚡");
+    }
+
+    function downloadSavedProfile(id) {
+      const profile = getSavedProfiles().find(p => p.id === id);
+      if (!profile) return;
+      downloadTextFile(`${profile.name}.txt`, profile.content || "");
+    }
+
+    function downloadSavedPrompt(id) {
+      const profile = getSavedProfiles().find(p => p.id === id);
+      if (!profile || !profile.prompt) {
+        alert("Ese perfil no tiene prompt guardado.");
+        return;
+      }
+      downloadTextFile(`${profile.name}-prompt.txt`, profile.prompt);
+    }
+
+    function deleteSavedProfile(id) {
+      const profiles = getSavedProfiles().filter(p => p.id !== id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
+      renderSavedProfiles();
+    }
+
+    function clearAllProfiles() {
+      localStorage.removeItem(STORAGE_KEY);
+      renderSavedProfiles();
+    }
+
+    async function login() {
+      const email = document.getElementById("emailInput").value.trim();
+
+      if (!email) {
+        alert("mete tu correo");
+        return;
+      }
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+
+      if (error) {
+        alert("error: " + error.message);
+      } else {
+        alert("revisa tu correo 📩");
+      }
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      updateAuthUI();
+      alert("sesión cerrada");
+    }
+
+    async function updateAuthUI() {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) {
+        document.getElementById("authStatus").innerText = "Error revisando sesión";
+        return;
+      }
+
+      if (data.user) {
+        document.getElementById("authStatus").innerText = `Sesión activa: ${data.user.email}`;
+        document.getElementById("emailInput").value = data.user.email || "";
+      } else {
+        document.getElementById("authStatus").innerText = "No has iniciado sesión";
+      }
+    }
+
+    async function generateProfile() {
+      const { data } = await supabase.auth.getUser();
+
+      if (!data.user) {
+        alert("primero inicia sesión con tu correo");
+        return;
+      }
+
+      const button = document.getElementById("generateBtn");
+      const textInput = document.getElementById("chatInput").value.trim();
+      const fileInputValue = document.getElementById("fileText").value.trim();
+      const finalText = textInput || fileInputValue;
+
+      if (finalText.length < 20) {
+        alert("Mete más texto para analizar.");
+        return;
+      }
+
+      showResult("Procesando...", true);
+      button.disabled = true;
+      button.innerText = "Procesando...";
+
+      lastFullProfile = "";
+      lastPromptOnly = "";
+
+      try {
+        const response = await fetch("/api/generar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            texto: finalText,
+            proveedor: currentProvider
+          })
+        });
+
+        const data = await response.json();
+
+        if (!data.resultado) {
+          showResult("Hubo un error generando el perfil.");
+          button.disabled = false;
+          button.innerText = "Crear perfil";
+          return;
+        }
+
+        lastFullProfile = data.resultado;
+        const promptExtracted = extractSection(data.resultado, "⚡ Prompt listo para copiar:", []);
+        lastPromptOnly = promptExtracted || data.resultado;
+
+        showResult(data.resultado);
+        saveProfileToHistory();
+      } catch (error) {
+        showResult("Error conectando con la IA.");
+      }
+
+      button.disabled = false;
+      button.innerText = "Crear perfil";
+    }
+
+    function copyFullProfile() {
+      if (!lastFullProfile.trim()) {
+        alert("Todavía no hay perfil para copiar.");
+        return;
+      }
+      navigator.clipboard.writeText(lastFullProfile);
+      alert("Perfil completo copiado 🚀");
+    }
+
+    function copyPromptOnly() {
+      if (!lastPromptOnly.trim()) {
+        alert("Todavía no hay prompt para copiar.");
+        return;
+      }
+      navigator.clipboard.writeText(lastPromptOnly);
+      alert("Prompt copiado ⚡");
+    }
+
+    function downloadFullProfile() {
+      if (!lastFullProfile.trim()) {
+        alert("Todavía no hay perfil para descargar.");
+        return;
+      }
+      downloadTextFile(`${getProfileName()}.txt`, lastFullProfile);
+    }
+
+    function downloadPromptOnly() {
+      if (!lastPromptOnly.trim()) {
+        alert("Todavía no hay prompt para descargar.");
+        return;
+      }
+      downloadTextFile(`${getProfileName()}-prompt.txt`, lastPromptOnly);
+    }
+
+    document.getElementById("chatInput").addEventListener("input", updateTextCounter);
+    document.getElementById("fileText").addEventListener("input", updateFileCounter);
+
+    document.getElementById("fileInput").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      await readUploadedFile(file);
+    });
+
+    const dropzone = document.getElementById("dropzone");
+
+    ["dragenter", "dragover"].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add("drag");
+      });
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove("drag");
+      });
+    });
+
+    dropzone.addEventListener("drop", async (e) => {
+      const files = e.dataTransfer.files;
+      if (files && files[0]) {
+        document.getElementById("fileInput").files = files;
+        await readUploadedFile(files[0]);
+      }
+    });
+
+    supabase.auth.onAuthStateChange(() => {
+      updateAuthUI();
+    });
+
+    updateProviderSteps();
+    updateTextCounter();
+    updateFileCounter();
+    renderSavedProfiles();
+    updateAuthUI();
+  </script>
 </body>
 </html>
